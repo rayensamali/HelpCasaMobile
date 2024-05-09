@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">HelpCasaMobile</string>
+    <string name="Bienvenue">Bienvenue</string>
+    <string name="indentif">S\'identifier</string>
+    <string name="createacc">Créer un compte</string>
+    <string name="invité">Continuer en Tant qu\'invité</string>
+    <string name="app"><u>A propos de nous</u></string>
+    <string name="ravis">Ravis de vous revoir</string>
+    <string name="mail">Entrer votre mail</string>
+    <string name="password">Entrer votre mot de passe</string>
+    <string name="connect">Connecter</string>
+    <string name="mdps"><u>mot de passe oublié</u></string>
+    <string name="noacc"><u>Vous n\'avez pas de compte?</u></string>
+    <string name="message">Sélectionner votre\ntype d\'utilisateur\nparmis les options\nsuivantes</string>
+    <string name="agimmob">Agent immobilier</string>
+    <string name="prop">Client propriétaire</string>
+    <string name="achet">Client acheteur</string>
+    <string name="suiv">Suivant</string>
+    <string name="coordonnes">Entrer vos coordonnées</string>
+    <string name="nom">nom</string>
+    <string name="prenom">prenom</string>
 </resources>

@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="darkBlue">#193948</color>
+    <color name="welcomecolor">#AABFD0</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="btncolor">#B9FCF8</color>
+    <color name="gris">#7AC6ADAD</color>
+    <color name="hintc">#7EFFFFFF</color>
+
+
+
+
 </resources>
