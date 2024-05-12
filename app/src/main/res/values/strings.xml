@@ -19,4 +19,11 @@
     <string name="coordonnes">Entrer vos coordonnées</string>
     <string name="nom">nom</string>
     <string name="prenom">prenom</string>
+    <string name="option">option</string>
+    <string name="adr">adresse</string>
+    <string name="codepost">Code postal</string>
+    <string name="Confirmpassword">Confirmer votre mot de passe</string>
+    <string name="numMob">numerot mobile</string>
+    <string name="numFix">numerot fixe</string>
+    <string name="next">Suivant</string>
 </resources>

@@ -3,8 +3,9 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:text="@string/option"
     android:textColor="@color/hintc"
-    android:textSize="16sp"
-    android:padding="10dp"
-    android:background="@drawable/edittxt"
+    android:textSize="20sp"
+    android:background="@color/dropdown"
+    android:paddingHorizontal="10dp"
     />

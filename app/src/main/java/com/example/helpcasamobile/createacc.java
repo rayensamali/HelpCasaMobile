@@ -20,12 +20,21 @@ public class createacc extends AppCompatActivity {
         setContentView(R.layout.activity_createacc);
         rdg = findViewById(R.id.radg);
         button = findViewById(R.id.suivant);
-        i = new Intent(createacc.this,);
+        i = new Intent(createacc.this, coordonne.class);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                if(rdg.getCheckedRadioButtonId()==R.id.agentimmobilier){
-
+                    i.putExtra("KEYIMMOBILLIER","immobiler");
+                    startActivity(i);
+               }
+               if(rdg.getCheckedRadioButtonId()==R.id.clienprop){
+                    i.putExtra("KEYPROPRIETAIRE","PROPRIETAIRE");
+                    startActivity(i);
+               }
+               if(rdg.getCheckedRadioButtonId()==R.id.clienachet){
+                   i.putExtra("KEYACHETEUR","ACHETEUR");
+                   startActivity(i);
                }
             }
         });
