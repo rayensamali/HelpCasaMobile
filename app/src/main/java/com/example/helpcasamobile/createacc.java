@@ -25,15 +25,15 @@ public class createacc extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                if(rdg.getCheckedRadioButtonId()==R.id.agentimmobilier){
-                    i.putExtra("KEYIMMOBILLIER","immobiler");
+                    i.putExtra("KEY","immobiler");
                     startActivity(i);
                }
                if(rdg.getCheckedRadioButtonId()==R.id.clienprop){
-                    i.putExtra("KEYPROPRIETAIRE","PROPRIETAIRE");
+                    i.putExtra("KEY","PROPRIETAIRE");
                     startActivity(i);
                }
                if(rdg.getCheckedRadioButtonId()==R.id.clienachet){
-                   i.putExtra("KEYACHETEUR","ACHETEUR");
+                   i.putExtra("KEY","ACHETEUR");
                    startActivity(i);
                }
             }

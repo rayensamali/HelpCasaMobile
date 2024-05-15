@@ -71,7 +71,7 @@
                     android:textColorHint="@color/hintc"
                     android:layout_marginHorizontal="20sp"
                     android:padding="10dp"
-                    android:id="@+id/ConfirmPassword"
+                    android:id="@+id/password"
                     android:inputType="textPassword"
                     />
                 <EditText
@@ -85,22 +85,25 @@
                     android:textColorHint="@color/hintc"
                     android:layout_marginHorizontal="20sp"
                     android:padding="10dp"
-                    android:id="@+id/password"
+                    android:id="@+id/Confirmpassword"
                     android:inputType="textPassword"
                     />
+
                 <EditText
+                    android:id="@+id/nom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/nom"
-                    android:background="@drawable/edittxt"
                     android:layout_gravity="center"
-                    android:textSize="20dp"
-                    android:layout_marginTop="25dp"
-                    android:textColorHint="@color/hintc"
                     android:layout_marginHorizontal="20sp"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/edittxt"
+                    android:hint="@string/nom"
+                    android:inputType="text"
                     android:padding="10dp"
-                    android:id="@+id/nom"
-                    />
+                    android:textColorHint="@color/hintc"
+                    android:textSize="20dp" />
+
+
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -113,6 +116,20 @@
                     android:layout_marginHorizontal="20sp"
                     android:padding="10dp"
                     android:id="@+id/prenom"
+                    android:inputType="text"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/date"
+                    android:background="@drawable/edittxt"
+                    android:layout_gravity="center"
+                    android:textSize="20dp"
+                    android:layout_marginTop="25dp"
+                    android:textColorHint="@color/hintc"
+                    android:layout_marginHorizontal="20sp"
+                    android:padding="10dp"
+                    android:id="@+id/date"
                     />
                 <Spinner
                     android:id="@+id/civilité"
@@ -138,6 +155,8 @@
                     android:layout_marginHorizontal="20sp"
                     android:padding="10dp"
                     android:id="@+id/adresse"
+                    android:inputType="text"
+
                     />
                 <Spinner
                     android:id="@+id/spinner_gouvernorates"
@@ -179,11 +198,13 @@
                     android:padding="10dp"
                     android:id="@+id/Code_Postale"
                     android:inputType="numberDecimal"
+
                     />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:paddingBottom="10dp"
                     >
                     <EditText
                         android:layout_width="wrap_content"
@@ -210,7 +231,7 @@
                         android:textColorHint="@color/hintc"
                         android:layout_marginHorizontal="20sp"
                         android:padding="10dp"
-                        android:id="@+id/NumFixz"
+                        android:id="@+id/NumFixe"
                         android:inputType="numberDecimal"
                         />
                 </LinearLayout>
@@ -219,8 +240,11 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/next"
                     android:text="@string/next"
-                    android:background="@drawable/buttons1"
+                    android:background="@drawable/button2"
                     android:padding="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20sp"
+                    android:layout_gravity="end"
                     />
             </LinearLayout>
         </ScrollView>

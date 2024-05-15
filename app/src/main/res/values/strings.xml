@@ -26,4 +26,6 @@
     <string name="numMob">numerot mobile</string>
     <string name="numFix">numerot fixe</string>
     <string name="next">Suivant</string>
+    <string name="age">Selectionner Votre age</string>
+    <string name="date">donner la date de naissance</string>
 </resources>
