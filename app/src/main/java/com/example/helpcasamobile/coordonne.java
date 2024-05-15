@@ -150,17 +150,7 @@ public class coordonne extends AppCompatActivity {
             }
         });
 
-        States.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                state = adapterView.getItemAtPosition(i).toString();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         new CountryNameFetcher() {
             @Override
@@ -200,40 +190,51 @@ public class coordonne extends AppCompatActivity {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, R.layout.spinner_item_layout, cities);
         adapter1.setDropDownViewResource(R.layout.spinner_item_layout);
         States.setAdapter(adapter1);
+        States.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                state = adapterView.getItemAtPosition(i).toString();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
 
         NextBTN = findViewById(R.id.next);
         NextBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                smail = mail.getText().toString();
-                spassword = password.getText().toString();
-                sname = name.getText().toString();
-                slastname = lastname.getText().toString();
-                sadress = adress.getText().toString();
-                scode_postal = code_postal.getText().toString();
-                snum_mobile = num_mobile.getText().toString();
-                snumfixe = numfixe.getText().toString();
-                sdate =date.getText().toString();
-                sconfpass  = confpass.getText().toString();
-                startActivity(new Intent(coordonne.this, welcome.class));
-                Log.d("mylog", "onClick: ");
-                if(smail.isEmpty() || spassword.isEmpty() || slastname.isEmpty() || sadress.isEmpty() || scode_postal.isEmpty()
-                        || snum_mobile.isEmpty() || snum_mobile.isEmpty() || sdate.isEmpty() || sconfpass.isEmpty() || sexe.isEmpty()
-                        || country.isEmpty() || state.isEmpty()) {
-                    Toast.makeText(coordonne.this, "touts les champs doives etre remplies", Toast.LENGTH_LONG).show();
-                }
-                if(!smail.matches(emailPattern)){
-                    mail.setError("invalid mail");
+                smail = mail.getText().toString().trim();
+                spassword = password.getText().toString().trim();
+                sname = name.getText().toString().trim();
+                slastname = lastname.getText().toString().trim();
+                sadress = adress.getText().toString().trim();
+                scode_postal = code_postal.getText().toString().trim();
+                snum_mobile = num_mobile.getText().toString().trim();
+                snumfixe = numfixe.getText().toString().trim();
+                sdate = date.getText().toString().trim();
+                sconfpass = confpass.getText().toString().trim();
 
-                }
-                if(!spassword.equals(sconfpass)){
-                    confpass.setError("password not matching");
+                Log.d("mylog", "onClick: ");
+
+                if (smail.equals("") || spassword.equals("") || slastname.equals("") || sadress.equals("") || scode_postal.equals("")
+                        || snum_mobile.equals("") || sdate.equals("") || sconfpass.equals("") || sexe.equals("")
+                        || country.equals("") || state.equals("")) {
+                    Toast.makeText(coordonne.this, "Tous les champs doivent être remplis", Toast.LENGTH_LONG).show();
+                } else if (!smail.matches(emailPattern)) {
+                    mail.setError("Email invalide");
+                } else if (!spassword.equals(sconfpass)) {
+                    confpass.setError("Les mots de passe ne correspondent pas");
+                } else {
+                    // Validation passed, proceed to next activity
+                    startActivity(new Intent(coordonne.this, welcome.class));
                 }
             }
-
         });
+
 
 
 
