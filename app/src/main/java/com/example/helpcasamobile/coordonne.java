@@ -31,10 +31,9 @@ import java.util.Collections;
 
 public class coordonne extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private TextView suivant;
 
     private Spinner spinner, Countries,States;
-    private EditText mail,password,name,lastname,adress,code_postal,num_mobile,numfixe;
+    private EditText mail,password,name,lastname,adress,code_postal,num_mobile,numfixe,confpass;
     private  TextView date;
     private TextView NextBTN;
     private Intent typeu;
@@ -44,7 +43,7 @@ public class coordonne extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    private String smail,spassword,sname,slastname,ssexe,sadress,sgouvernorat,sville,scode_postal,snum_mobile,snumfixe;
+    private String smail,spassword,sname,slastname,ssexe,sadress,sgouvernorat,sville,scode_postal,snum_mobile,snumfixe,sdate,sexe,country,state,sconfpass;
 
 
     @Override
@@ -60,16 +59,7 @@ public class coordonne extends AppCompatActivity {
         num_mobile = findViewById(R.id.NumMobile);
         numfixe = findViewById(R.id.NumFixe);
         date = findViewById(R.id.date);
-        suivant = findViewById(R.id.next);
-
-
-        suivant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                smail = mail.getText().toString();
-
-            }
-        });
+        confpass = findViewById(R.id.Confirmpassword);
 
 
 
@@ -136,6 +126,42 @@ public class coordonne extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinner_item_layout);
         spinner.setAdapter(adapter);
         Countries = findViewById(R.id.spinner_gouvernorates);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                sexe = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        Countries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                country = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        States.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                state = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         new CountryNameFetcher() {
             @Override
             protected void onPostExecute(ArrayList<String> countryNames) {
@@ -181,8 +207,32 @@ public class coordonne extends AppCompatActivity {
         NextBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                smail = mail.getText().toString();
+                spassword = password.getText().toString();
+                sname = name.getText().toString();
+                slastname = lastname.getText().toString();
+                sadress = adress.getText().toString();
+                scode_postal = code_postal.getText().toString();
+                snum_mobile = num_mobile.getText().toString();
+                snumfixe = numfixe.getText().toString();
+                sdate =date.getText().toString();
+                sconfpass  = confpass.getText().toString();
+                startActivity(new Intent(coordonne.this, welcome.class));
+                Log.d("mylog", "onClick: ");
+                if(smail.isEmpty() || spassword.isEmpty() || slastname.isEmpty() || sadress.isEmpty() || scode_postal.isEmpty()
+                        || snum_mobile.isEmpty() || snum_mobile.isEmpty() || sdate.isEmpty() || sconfpass.isEmpty() || sexe.isEmpty()
+                        || country.isEmpty() || state.isEmpty()) {
+                    Toast.makeText(coordonne.this, "touts les champs doives etre remplies", Toast.LENGTH_LONG).show();
+                }
+                if(!smail.matches(emailPattern)){
+                    mail.setError("invalid mail");
+
+                }
+                if(!spassword.equals(sconfpass)){
+                    confpass.setError("password not matching");
+                }
             }
+
         });
 
 
