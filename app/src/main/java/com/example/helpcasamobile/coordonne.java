@@ -67,7 +67,7 @@ public class coordonne extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 smail = mail.getText().toString();
-                spassword = password
+
             }
         });
 
