@@ -41,8 +41,23 @@
             android:text="@string/nomutlisateur"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="60dp"
             android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/suiv"
+            android:background="@drawable/button2"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:layout_marginTop="145dp"
+            android:id="@+id/suiv"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_marginLeft="100dp"
+            android:padding="10dp"
+            />
     </LinearLayout>
 
 </LinearLayout>
