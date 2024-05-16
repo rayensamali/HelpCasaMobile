@@ -130,6 +130,7 @@ public class coordonne extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 sexe = adapterView.getItemAtPosition(i).toString();
+                Log.d("TAG", sexe);
             }
 
             @Override
@@ -138,17 +139,7 @@ public class coordonne extends AppCompatActivity {
             }
         });
 
-        Countries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                country = adapterView.getItemAtPosition(i).toString();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
 
 
@@ -172,10 +163,11 @@ public class coordonne extends AppCompatActivity {
         Countries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedCountry = adapterView.getItemAtPosition(i).toString();
-                if (!selectedCountry.equals("Tunisia")) {
+                 country = adapterView.getItemAtPosition(i).toString();
+                if (!country.equals("Tunisia")) {
                     showOnlyTunisiaAlert();
                     spinner.setSelection(0); // Reset spinner to first item (Tunisia)
+                    Log.d("log_d", country);
                 }
             }
 
@@ -194,6 +186,7 @@ public class coordonne extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 state = adapterView.getItemAtPosition(i).toString();
+                Log.d("my-tag", state);
             }
 
             @Override
@@ -223,6 +216,7 @@ public class coordonne extends AppCompatActivity {
                 if (smail.equals("") || spassword.equals("") || slastname.equals("") || sadress.equals("") || scode_postal.equals("")
                         || snum_mobile.equals("") || sdate.equals("") || sconfpass.equals("") || sexe.equals("")
                         || country.equals("") || state.equals("")) {
+                    Log.d("arrorlog", "every thing not ok ");
                     Toast.makeText(coordonne.this, "Tous les champs doivent être remplis", Toast.LENGTH_LONG).show();
                 } else if (!smail.matches(emailPattern)) {
                     mail.setError("Email invalide");
