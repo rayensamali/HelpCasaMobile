@@ -2,6 +2,7 @@ package com.example.helpcasamobile;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,15 +19,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 
 public class coordonne extends AppCompatActivity {
@@ -43,7 +53,7 @@ public class coordonne extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    private String smail,spassword,sname,slastname,ssexe,sadress,sgouvernorat,sville,scode_postal,snum_mobile,snumfixe,sdate,sexe,country,state,sconfpass;
+    private String smail,spassword,sname,slastname,ssexe,sadress,sgouvernorat,scode_postal,snum_mobile,snumfixe,sdate,sexe,country,state,sconfpass;
 
 
     @Override
@@ -60,9 +70,11 @@ public class coordonne extends AppCompatActivity {
         numfixe = findViewById(R.id.NumFixe);
         date = findViewById(R.id.date);
         confpass = findViewById(R.id.Confirmpassword);
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-
-
+        typeu = getIntent();
+        userType = typeu.getStringExtra("KEY");
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,8 +102,7 @@ public class coordonne extends AppCompatActivity {
 
 
         // affichage de liste de civilité
-        typeu = getIntent();
-        userType = typeu.getStringExtra("KEY");
+
 
         spinner = findViewById(R.id.civilité);
         String[] options = {"Mr", "Melle", "Mm"};
@@ -220,11 +231,74 @@ public class coordonne extends AppCompatActivity {
                     Toast.makeText(coordonne.this, "Tous les champs doivent être remplis", Toast.LENGTH_LONG).show();
                 } else if (!smail.matches(emailPattern)) {
                     mail.setError("Email invalide");
-                } else if (!spassword.equals(sconfpass)) {
+                } else if (!spassword.equals(sconfpass)  || spassword.length()<6) {
                     confpass.setError("Les mots de passe ne correspondent pas");
+                    password.setError("Les mots de passe ne correspondent pas");
                 } else {
                     // Validation passed, proceed to next activity
-                    startActivity(new Intent(coordonne.this, welcome.class));
+                    ProgressDialog progressDialog = new ProgressDialog(coordonne.this);
+                    progressDialog.setMessage("Please wait while Registration");
+                    progressDialog.setTitle("Registration");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
+
+                    mAuth.createUserWithEmailAndPassword(smail,spassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                progressDialog.dismiss();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if(user!= null){
+                                    String usederId = user.getUid();
+                                    String username = generateUsername(slastname,usederId);
+                                    Toast.makeText(coordonne.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                    Map<String, Object> userdata = new HashMap<>();
+                                    userdata.put("adresse",sadress);
+                                    userdata.put("code_postal",scode_postal);
+                                    userdata.put("date_de_naissanse",sdate);
+                                    userdata.put("gouv",country);
+                                    userdata.put("nom",sname);
+                                    userdata.put("num_fixe",snumfixe);
+                                    userdata.put("num_mob",snum_mobile);
+                                    userdata.put("prenom",slastname);
+                                    userdata.put("sexe",sexe);
+                                    if(userType.equals("agent")){
+                                        userdata.put("type","agent");
+                                    }
+                                    if(userType.equals("PROPRIETAIRE")){
+                                        userdata.put("type","PROPRIETAIRE");
+                                    }
+                                    if(userType.equals("ACHETEUR")){
+                                        userdata.put("type","ACHETEUR");
+                                    }
+                                    if(userType.equals("responsableComm")){
+                                        userdata.put("type","responsableComm");
+                                    }
+                                    userdata.put("ville",state);
+                                    userdata.put("username", username);
+
+                                    db.collection("users").document(usederId).set(userdata).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Intent intent = new Intent(coordonne.this, welcome.class);
+                                                    intent.putExtra("username", username); // Put the username as extra
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                    startActivity(new Intent(coordonne.this, welcome.class));
+                                    finish();
+                                }
+                            }
+                            else{
+                                progressDialog.dismiss();
+                                Toast.makeText(coordonne.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+
+
                 }
             }
         });
@@ -258,6 +332,10 @@ public class coordonne extends AppCompatActivity {
 
         }
         return 0;
+    }
+    private String generateUsername(String prenom, String userId) {
+        // Concatenate the first 4 characters of the user ID with the prenom
+        return prenom + userId.substring(0, 4);
     }
 }
 

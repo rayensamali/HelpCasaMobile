@@ -24,20 +24,25 @@ public class createacc extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(rdg.getCheckedRadioButtonId()==R.id.agentimmobilier){
-                    i.putExtra("KEY","immobiler");
+                if (rdg.getCheckedRadioButtonId() == R.id.agentimmobilier) {
+                    i.putExtra("KEY", "agent");
                     startActivity(i);
-               }
-               if(rdg.getCheckedRadioButtonId()==R.id.clienprop){
-                    i.putExtra("KEY","PROPRIETAIRE");
+                }
+                if (rdg.getCheckedRadioButtonId() == R.id.clienprop) {
+                    i.putExtra("KEY", "PROPRIETAIRE");
                     startActivity(i);
-               }
-               if(rdg.getCheckedRadioButtonId()==R.id.clienachet){
-                   i.putExtra("KEY","ACHETEUR");
-                   startActivity(i);
-               }
-            }
-        });
+                }
+                if (rdg.getCheckedRadioButtonId() == R.id.clienachet) {
+                    i.putExtra("KEY", "ACHETEUR");
+                    startActivity(i);
+                }
+                if (rdg.getCheckedRadioButtonId() == R.id.responsableComm) {
+                    i.putExtra("KEY", "responsableComm");
+                    startActivity(i);
+                }
+            } });
 
-    }
+
+
+        }
 }

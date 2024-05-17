@@ -67,13 +67,22 @@
                 />
 
             <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/achet"
+            android:textColor="@color/welcomecolor"
+            android:textSize="20dp"
+            android:layout_marginLeft="45dp"
+            android:id="@+id/clienachet"
+            />
+            <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/achet"
+                android:text="@string/respconmm"
                 android:textColor="@color/welcomecolor"
                 android:textSize="20dp"
                 android:layout_marginLeft="45dp"
-                android:id="@+id/clienachet"
+                android:id="@+id/responsableComm"
                 />
 
         </RadioGroup>

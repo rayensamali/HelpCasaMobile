@@ -30,4 +30,5 @@
     <string name="date">donner la date de naissance</string>
     <string name="compte">Votre compte HelpCasaMobile a été créé avec succès ! Vous êtes maintenant prêt(e) à profiter de toutes les fonctionnalités pour vous aider  à acheter ou vendre un bien immobilier.\n</string>
     <string name="nomutlisateur">Votre nom d\'utilisateur est :</string>
+    <string name="respconmm">responsable commercial</string>
 </resources>
