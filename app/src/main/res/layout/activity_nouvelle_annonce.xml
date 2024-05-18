@@ -58,37 +58,19 @@
                     android:layout_marginHorizontal="20sp"
                     android:padding="12dp"
                     />
-                <LinearLayout
+
+                <Spinner
+                    android:id="@+id/gouver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    >
-                    <Spinner
-                        android:id="@+id/gouver"
-                        android:layout_width="165dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/editttcorr_annonce"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="15dp"
-                        android:textColorHint="@color/hintc"
-                        android:layout_marginHorizontal="20sp"
-                        android:padding="17dp"
-                        />
+                    android:background="@drawable/editttcorr_annonce"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:textColorHint="@color/hintc"
+                    android:layout_marginHorizontal="20sp"
+                    android:padding="12dp"
+                    />
 
-                    <Spinner
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/editttcorr_annonce"
-                        android:layout_gravity="center"
-                        android:textSize="20dp"
-                        android:layout_marginTop="15dp"
-                        android:textColorHint="@color/hintc"
-                        android:layout_marginHorizontal="20sp"
-                        android:padding="17dp"
-                        android:id="@+id/ville"
-                        />
-                </LinearLayout>
 
                 <EditText
                     android:layout_width="match_parent"
@@ -97,7 +79,7 @@
                     android:background="@drawable/editttcorr_annonce"
                     android:layout_gravity="center"
                     android:textSize="20dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="25dp"
                     android:textColorHint="@color/hintc"
                     android:layout_marginHorizontal="20sp"
                     android:padding="10dp"
@@ -118,7 +100,7 @@
                         android:background="@drawable/editttcorr_annonce"
                         android:layout_gravity="center"
                         android:textSize="20dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
                         android:textColorHint="@color/hintc"
                         android:layout_marginHorizontal="20sp"
                         android:padding="10dp"
@@ -132,7 +114,7 @@
                         android:background="@drawable/editttcorr_annonce"
                         android:layout_gravity="center"
                         android:textSize="20dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
                         android:textColorHint="@color/hintc"
                         android:layout_marginHorizontal="20sp"
                         android:padding="10dp"
@@ -148,7 +130,7 @@
                     android:background="@drawable/editttcorr_annonce"
                     android:layout_gravity="center"
                     android:textSize="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:textColorHint="@color/hintc"
                     android:layout_marginHorizontal="20sp"
                     android:padding="10dp"
