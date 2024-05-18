@@ -5,7 +5,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,10 +18,19 @@ public class nouvelleAnnonce extends AppCompatActivity {
     private Spinner typbien,typann,Gouvernorat ;
     private String bien,ann,gouv;
 
+    private String sbien,stypann,sgov,sadr,sprix,snbch,sdescriptif;
+    private EditText adr,sup,prix,nbch,Desc;
+    private TextView ajoutph,envoyer;
+    private ImageView img;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nouvelle_annonce);
+
+
+
+
         setTypbien();
         setGouvernorat();
         setTypann();
@@ -60,7 +72,7 @@ public class nouvelleAnnonce extends AppCompatActivity {
         });
     }
     private void setGouvernorat() {
-        Gouvernorat = findViewById(R.id.spinner_states);
+        Gouvernorat = findViewById(R.id.gouver);
         String[] cities = {
                 "Ariana", "Béja", "Ben Arous", "Bizerte", "Gabès", "Gafsa", "Jendouba",
                 "Kairouan", "Kasserine", "Kebili", "Kef", "Mahdia", "Manouba", "Medenine",
