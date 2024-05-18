@@ -1,24 +1,85 @@
 package com.example.helpcasamobile;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 
 public class nouvelleAnnonce extends AppCompatActivity {
+
+    private Spinner typbien,typann,Gouvernorat ;
+    private String bien,ann,gouv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_nouvelle_annonce);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        setTypbien();
+        setGouvernorat();
+        setTypann();
+
+    }
+
+    private void setTypbien(){
+        typbien = findViewById(R.id.type_bien);
+        String[] options = {"Appartement", "Villa", "Bureau", "Terrain"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item_layout, options);
+        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
+        typbien.setAdapter(adapter);
+
+        typbien.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                bien = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
+
+    private void setTypann(){
+        typann = findViewById(R.id.type_annonce);
+        String[] options = {"Vente","Location"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item_layout, options);
+        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
+        typann.setAdapter(adapter);
+        typann.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ann = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+    }
+    private void setGouvernorat() {
+        Gouvernorat = findViewById(R.id.spinner_states);
+        String[] cities = {
+                "Ariana", "Béja", "Ben Arous", "Bizerte", "Gabès", "Gafsa", "Jendouba",
+                "Kairouan", "Kasserine", "Kebili", "Kef", "Mahdia", "Manouba", "Medenine",
+                "Monastir", "Nabeul", "Sfax", "Sidi Bouzid", "Siliana", "Sousse",
+                "Tataouine", "Tozeur", "Tunis", "Zaghouan"
+        };
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item_layout, cities);
+        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
+        Gouvernorat.setAdapter(adapter);
+
+        Gouvernorat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                gouv = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+    }
+
 }

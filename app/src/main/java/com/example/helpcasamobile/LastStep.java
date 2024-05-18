@@ -105,8 +105,12 @@ public class LastStep extends AppCompatActivity {
         String userType = sh.getString("type", "");
         if ("agent".equals(userType)) {
             startActivity(new Intent(LastStep.this, homeAgent.class));
-        } else {
-            Toast.makeText(LastStep.this, "otheruser", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        if("PROPRIETAIRE".equals(userType)){
+            startActivity(new Intent(LastStep.this, home_CliPro.class));
+            finish();
         }
     }
 }

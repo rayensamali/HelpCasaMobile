@@ -66,24 +66,6 @@
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
     </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Recent acheteur et locateur"
-        android:textSize="30sp"
-        android:padding="10dp" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:orientation="horizontal"
-        >
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/recentclients"
-            />
-    </LinearLayout>
-
     <LinearLayout
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
