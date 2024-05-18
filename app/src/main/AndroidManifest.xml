@@ -15,10 +15,16 @@
         android:theme="@style/Theme.HelpCasaMobile"
         tools:targetApi="31">
         <activity
+            android:name=".home_CliPro"
+            android:exported="false" />
+        <activity
             android:name=".homeAgent"
             android:exported="false" />
         <activity
             android:name=".LastStep"
+            android:exported="false" />
+        <activity
+            android:name=".nouvelleAnnonce"
             android:exported="false" />
         <activity
             android:name=".welcome"

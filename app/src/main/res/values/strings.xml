@@ -32,4 +32,15 @@
     <string name="nomutlisateur">Votre nom d\'utilisateur est :</string>
     <string name="respconmm">responsable commercial</string>
     <string name="lastStep">juste ajouter une photo</string>
+    <string name="Nvlannonce">Nouvelle annonce</string>
+    <string name="supfi">Superficie</string>
+    <string name="prx">Prix</string>
+    <string name="nbChm">Nombre de chambre</string>
+    <string name="descr">Descriptif du bien immobilier</string>
+    <string name="ajtPh">Ajouter des photos</string>
+    <string name="send">Envoyer</string>
+    <string name="tblBor">Tableau de bord</string>
+    <string name="pos">Poster une nouvelle annonce</string>
+    <string name="cons">Consulter les annonces</string>
+    <string name="his">Historique des annonces publiées</string>
 </resources>
