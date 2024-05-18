@@ -43,4 +43,7 @@
     <string name="pos">Poster une nouvelle annonce</string>
     <string name="cons">Consulter les annonces</string>
     <string name="his">Historique des annonces publiées</string>
+    <string name="hist">Historique</string>
+    <string name="hisVid">Votre historique est vide\n</string>
+    <string name="hisviid">Votre historique est vide</string>
 </resources>
