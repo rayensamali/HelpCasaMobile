@@ -5,6 +5,176 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".homeAgent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/homepage">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/settings"
+            android:background="@android:color/transparent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:id="@+id/photoContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="end">
+
+            <View
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/circle_white"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="20dp" />
+
+            <View
+                android:id="@+id/status"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/connected"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="20dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                app:cardCornerRadius="250dp">
+
+                <ImageView
+                    android:id="@+id/userPhotoImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/dafaultim"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recent acheteur et locateur"
+        android:textSize="30sp"
+        android:padding="10dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recentclients"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/newcontainer"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tableau de bord"
+            android:textSize="30sp"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:text="Chercher des acheteurs"
+                    android:background="@drawable/newbuton"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/chercherAcheteurs"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_margin="10sp"
+                    />
+                <TextView
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:text="Chercher des locateurs"
+                    android:background="@drawable/newbuton"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/chercherLocateurs"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_margin="10sp"
+                    />
+                <TextView
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:text="Gerer les nouveaux comptes"
+                    android:background="@drawable/newbuton"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/guest"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_margin="10sp"
+                    />
+                <TextView
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:text="Voir les nouvelles annonces"
+                    android:background="@drawable/newbuton"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/nouvellesannonces"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_margin="10sp"
+                    />
+                <TextView
+                    android:layout_width="400dp"
+                    android:layout_height="50dp"
+                    android:text="Annonces publiés"
+                    android:background="@drawable/newbuton"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/annoncespubliés"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:layout_margin="10sp"
+                    />
+            </LinearLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
 </LinearLayout>

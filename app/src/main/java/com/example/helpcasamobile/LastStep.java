@@ -5,9 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
 
 public class LastStep extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 111;
@@ -64,7 +68,19 @@ public class LastStep extends AppCompatActivity {
             Uri selectedImageUri = data != null ? data.getData() : null;
             if (selectedImageUri != null) {
                 image.setImageURI(selectedImageUri);
-                showProgressAndNavigate();
+                try {
+                    // Convert URI to Bitmap
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+
+                    // Save Bitmap to SharedPreferences
+                    ImageUtil.saveImageToPreferences(this, bitmap);
+
+                    // Show progress dialog and navigate to next activity
+                    showProgressAndNavigate();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
