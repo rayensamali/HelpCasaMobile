@@ -281,6 +281,7 @@ public class coordonne extends AppCompatActivity {
                 Intent intent = new Intent(coordonne.this, welcome.class);
                 intent.putExtra("username", userdata.get("username").toString());
                 SharedPreferences.Editor editor = sh.edit();
+                //put user type in shared preferences
                 editor.putString("type", userType);
                 editor.apply();
                 startActivity(intent);
