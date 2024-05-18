@@ -3,13 +3,14 @@ package com.example.helpcasamobile;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,30 +37,52 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 
 public class coordonne extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-
-    private Spinner spinner, Countries,States;
-    private EditText mail,password,name,lastname,adress,code_postal,num_mobile,numfixe,confpass;
-    private  TextView date;
-    private TextView NextBTN;
+    private Spinner spinner, Countries, States;
+    private EditText mail, password, name, lastname, adress, code_postal, num_mobile, numfixe, confpass;
+    private TextView date, NextBTN;
     private Intent typeu;
     private String userType;
-    private String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private final String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    private String smail,spassword,sname,slastname,ssexe,sadress,sgouvernorat,scode_postal,snum_mobile,snumfixe,sdate,sexe,country,state,sconfpass;
-
+    private String smail, spassword, sname, slastname, sexe, sadress, country, state, sconfpass,scode_postal,snum_mobile,snumfixe;
+    private SharedPreferences sh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordonne);
+        sh = getSharedPreferences("userType", Context.MODE_PRIVATE);
+
+        initializeUIElements();
+        initializeFirebase();
+
+        typeu = getIntent();
+        userType = typeu.getStringExtra("KEY");
+
+        setDatePicker();
+        setCiviliteSpinner();
+        setCountriesSpinner();
+        setStatesSpinner();
+
+        NextBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getInputValues();
+
+                if (validateInputs()) {
+                    registerUser();
+                }
+            }
+        });
+    }
+
+    private void initializeUIElements() {
         mail = findViewById(R.id.mail);
         password = findViewById(R.id.password);
         name = findViewById(R.id.nom);
@@ -70,11 +93,15 @@ public class coordonne extends AppCompatActivity {
         numfixe = findViewById(R.id.NumFixe);
         date = findViewById(R.id.date);
         confpass = findViewById(R.id.Confirmpassword);
+        NextBTN = findViewById(R.id.next);
+    }
+
+    private void initializeFirebase() {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+    }
 
-        typeu = getIntent();
-        userType = typeu.getStringExtra("KEY");
+    private void setDatePicker() {
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,52 +118,24 @@ public class coordonne extends AppCompatActivity {
                 dialog.show();
             }
         });
+
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
-                String dateselectionné = day + "/" + month + "/" + year;
-                 date.setText(dateselectionné);
+                String selectedDate = day + "/" + month + "/" + year;
+                date.setText(selectedDate);
             }
         };
+    }
 
-
-        // affichage de liste de civilité
-
-
+    private void setCiviliteSpinner() {
         spinner = findViewById(R.id.civilité);
         String[] options = {"Mr", "Melle", "Mm"};
-        String[] cities = {
-                "Ariana",
-                "Béja",
-                "Ben Arous",
-                "Bizerte",
-                "Gabès",
-                "Gafsa",
-                "Jendouba",
-                "Kairouan",
-                "Kasserine",
-                "Kebili",
-                "Kef",
-                "Mahdia",
-                "Manouba",
-                "Medenine",
-                "Monastir",
-                "Nabeul",
-                "Sfax",
-                "Sidi Bouzid",
-                "Siliana",
-                "Sousse",
-                "Tataouine",
-                "Tozeur",
-                "Tunis",
-                "Zaghouan"
-        };
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item_layout, options);
         adapter.setDropDownViewResource(R.layout.spinner_item_layout);
         spinner.setAdapter(adapter);
-        Countries = findViewById(R.id.spinner_gouvernorates);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -145,168 +144,149 @@ public class coordonne extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+    }
 
-
-
-
-
+    private void setCountriesSpinner() {
+        Countries = findViewById(R.id.spinner_gouvernorates);
         new CountryNameFetcher() {
             @Override
             protected void onPostExecute(ArrayList<String> countryNames) {
                 if (countryNames != null) {
-                    // Log the number of countries
                     Collections.sort(countryNames);
-                    // Set the adapter for the Countries spinner
                     ArrayAdapter<String> countryAdapter = new ArrayAdapter<>(coordonne.this, R.layout.spinner_item_layout, countryNames);
                     countryAdapter.setDropDownViewResource(R.layout.spinner_item_layout);
                     Countries.setAdapter(countryAdapter);
-                    // Do something with the country names ArrayList
                 } else {
-                    // Handle error
                     Toast.makeText(coordonne.this, "Probleme de connection", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
+
         Countries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                 country = adapterView.getItemAtPosition(i).toString();
+                country = adapterView.getItemAtPosition(i).toString();
                 if (!country.equals("Tunisia")) {
                     showOnlyTunisiaAlert();
-                    spinner.setSelection(0); // Reset spinner to first item (Tunisia)
-                    Log.d("log_d", country);
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+    }
 
-
+    private void setStatesSpinner() {
         States = findViewById(R.id.spinner_states);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, R.layout.spinner_item_layout, cities);
-        adapter1.setDropDownViewResource(R.layout.spinner_item_layout);
-        States.setAdapter(adapter1);
+        String[] cities = {
+                "Ariana", "Béja", "Ben Arous", "Bizerte", "Gabès", "Gafsa", "Jendouba",
+                "Kairouan", "Kasserine", "Kebili", "Kef", "Mahdia", "Manouba", "Medenine",
+                "Monastir", "Nabeul", "Sfax", "Sidi Bouzid", "Siliana", "Sousse",
+                "Tataouine", "Tozeur", "Tunis", "Zaghouan"
+        };
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item_layout, cities);
+        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
+        States.setAdapter(adapter);
+
         States.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 state = adapterView.getItemAtPosition(i).toString();
-                Log.d("my-tag", state);
+                Log.d("TAG", state);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+    }
 
+    private void getInputValues() {
+        smail = mail.getText().toString().trim();
+        spassword = password.getText().toString().trim();
+        sname = name.getText().toString().trim();
+        slastname = lastname.getText().toString().trim();
+        sadress = adress.getText().toString().trim();
+        scode_postal = code_postal.getText().toString().trim();
+        snum_mobile = num_mobile.getText().toString().trim();
+        snumfixe = numfixe.getText().toString().trim();
+        sconfpass = confpass.getText().toString().trim();
+    }
 
-        NextBTN = findViewById(R.id.next);
-        NextBTN.setOnClickListener(new View.OnClickListener() {
+    private boolean validateInputs() {
+        if (smail.isEmpty() || spassword.isEmpty() || slastname.isEmpty() || sadress.isEmpty() || scode_postal.isEmpty()
+                || snum_mobile.isEmpty() || date.getText().toString().trim().isEmpty() || sconfpass.isEmpty() || sexe.isEmpty()
+                || country.isEmpty() || state.isEmpty()) {
+            Toast.makeText(coordonne.this, "Tous les champs doivent être remplis", Toast.LENGTH_LONG).show();
+            return false;
+        } else if (!smail.matches(emailPattern)) {
+            mail.setError("Email invalide");
+            return false;
+        } else if (!spassword.equals(sconfpass) || spassword.length() < 6) {
+            confpass.setError("Les mots de passe ne correspondent pas");
+            password.setError("Les mots de passe ne correspondent pas");
+            return false;
+        }
+        return true;
+    }
+
+    private void registerUser() {
+        ProgressDialog progressDialog = new ProgressDialog(coordonne.this);
+        progressDialog.setMessage("Please wait while Registration");
+        progressDialog.setTitle("Registration");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+        mAuth.createUserWithEmailAndPassword(smail, spassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onClick(View view) {
-                smail = mail.getText().toString().trim();
-                spassword = password.getText().toString().trim();
-                sname = name.getText().toString().trim();
-                slastname = lastname.getText().toString().trim();
-                sadress = adress.getText().toString().trim();
-                scode_postal = code_postal.getText().toString().trim();
-                snum_mobile = num_mobile.getText().toString().trim();
-                snumfixe = numfixe.getText().toString().trim();
-                sdate = date.getText().toString().trim();
-                sconfpass = confpass.getText().toString().trim();
-
-                Log.d("mylog", "onClick: ");
-
-                if (smail.equals("") || spassword.equals("") || slastname.equals("") || sadress.equals("") || scode_postal.equals("")
-                        || snum_mobile.equals("") || sdate.equals("") || sconfpass.equals("") || sexe.equals("")
-                        || country.equals("") || state.equals("")) {
-                    Log.d("arrorlog", "every thing not ok ");
-                    Toast.makeText(coordonne.this, "Tous les champs doivent être remplis", Toast.LENGTH_LONG).show();
-                } else if (!smail.matches(emailPattern)) {
-                    mail.setError("Email invalide");
-                } else if (!spassword.equals(sconfpass)  || spassword.length()<6) {
-                    confpass.setError("Les mots de passe ne correspondent pas");
-                    password.setError("Les mots de passe ne correspondent pas");
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                progressDialog.dismiss();
+                if (task.isSuccessful()) {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        String userId = user.getUid();
+                        String username = generateUsername(slastname, userId);
+                        Map<String, Object> userdata = createUserdata(username);
+                        saveUserDataToFirestore(userId, userdata);
+                    }
                 } else {
-                    // Validation passed, proceed to next activity
-                    ProgressDialog progressDialog = new ProgressDialog(coordonne.this);
-                    progressDialog.setMessage("Please wait while Registration");
-                    progressDialog.setTitle("Registration");
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.show();
-
-                    mAuth.createUserWithEmailAndPassword(smail,spassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                progressDialog.dismiss();
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                if(user!= null){
-                                    String usederId = user.getUid();
-                                    String username = generateUsername(slastname,usederId);
-                                    Toast.makeText(coordonne.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                                    Map<String, Object> userdata = new HashMap<>();
-                                    userdata.put("adresse",sadress);
-                                    userdata.put("code_postal",scode_postal);
-                                    userdata.put("date_de_naissanse",sdate);
-                                    userdata.put("gouv",country);
-                                    userdata.put("nom",sname);
-                                    userdata.put("num_fixe",snumfixe);
-                                    userdata.put("num_mob",snum_mobile);
-                                    userdata.put("prenom",slastname);
-                                    userdata.put("sexe",sexe);
-                                    if(userType.equals("agent")){
-                                        userdata.put("type","agent");
-                                    }
-                                    if(userType.equals("PROPRIETAIRE")){
-                                        userdata.put("type","PROPRIETAIRE");
-                                    }
-                                    if(userType.equals("ACHETEUR")){
-                                        userdata.put("type","ACHETEUR");
-                                    }
-                                    if(userType.equals("responsableComm")){
-                                        userdata.put("type","responsableComm");
-                                    }
-                                    userdata.put("ville",state);
-                                    userdata.put("username", username);
-
-                                    db.collection("users").document(usederId).set(userdata).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Intent intent = new Intent(coordonne.this, welcome.class);
-                                                    intent.putExtra("username", username); // Put the username as extra
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            });
-                                    startActivity(new Intent(coordonne.this, welcome.class));
-                                    finish();
-                                }
-                            }
-                            else{
-                                progressDialog.dismiss();
-                                Toast.makeText(coordonne.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
-
-
+                    Toast.makeText(coordonne.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
 
+    private Map<String, Object> createUserdata(String username) {
+        Map<String, Object> userdata = new HashMap<>();
+        userdata.put("adresse", sadress);
+        userdata.put("code_postal", scode_postal);
+        userdata.put("date_de_naissanse", date.getText().toString().trim());
+        userdata.put("gouv", country);
+        userdata.put("nom", sname);
+        userdata.put("num_fixe", snumfixe);
+        userdata.put("num_mob", snum_mobile);
+        userdata.put("prenom", slastname);
+        userdata.put("sexe", sexe);
+        userdata.put("type", userType);
+        userdata.put("ville", state);
+        userdata.put("username", username);
+        return userdata;
+    }
 
-
-
-
+    private void saveUserDataToFirestore(String userId, Map<String, Object> userdata) {
+        db.collection("users").document(userId).set(userdata).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Intent intent = new Intent(coordonne.this, welcome.class);
+                intent.putExtra("username", userdata.get("username").toString());
+                SharedPreferences.Editor editor = sh.edit();
+                editor.putString("type", userType);
+                editor.apply();
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void showOnlyTunisiaAlert() {
@@ -320,8 +300,7 @@ public class coordonne extends AppCompatActivity {
                 Countries.setSelection(getIndex(Countries, "Tunisia"));
             }
         });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        builder.create().show();
     }
 
     private int getIndex(Spinner spinner, String item) {
@@ -329,13 +308,11 @@ public class coordonne extends AppCompatActivity {
             if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(item)) {
                 return i;
             }
-
         }
         return 0;
     }
+
     private String generateUsername(String prenom, String userId) {
-        // Concatenate the first 4 characters of the user ID with the prenom
         return prenom + userId.substring(0, 4);
     }
 }
-

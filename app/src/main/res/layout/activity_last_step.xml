@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LastStep"
+    android:orientation="vertical"
+    android:background="@drawable/gradientwelcome">
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/container"
+        android:padding="10dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lastStep"
+            android:textColor="@color/welcomecolor"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="55dp"/>
+
+        <RelativeLayout
+            android:id="@+id/photoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_marginVertical="0dp">
+
+            <View
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/circle_white"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="20dp" />
+
+            <View
+                android:id="@+id/status"
+                android:layout_width="280dp"
+                android:layout_height="280dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/connected"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="20dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerInParent="true"
+                app:cardCornerRadius="250dp">
+
+                <ImageView
+                    android:id="@+id/userPhotoImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/dafaultim"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ajouter une photo"
+                android:background="@drawable/button2"
+                android:textColor="@color/black"
+                android:id="@+id/ajouter"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/ignore"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button2"
+                android:padding="10dp"
+                android:text="ignorer"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
