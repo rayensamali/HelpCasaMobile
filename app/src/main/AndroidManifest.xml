@@ -18,6 +18,9 @@
             android:name=".historique"
             android:exported="false" />
         <activity
+            android:name=".historique_annonces"
+            android:exported="false" />
+        <activity
             android:name=".Historique_vide"
             android:exported="false" />
         <activity
