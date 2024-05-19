@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Annonce_recu"
+    android:background="@drawable/home_agentt"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/settings"
+            android:background="@android:color/transparent" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:id="@+id/photoContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="end">
+
+            <View
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/circle_white"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="20dp" />
+
+            <View
+                android:id="@+id/status"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/connected"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="20dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                app:cardCornerRadius="250dp">
+
+                <ImageView
+                    android:id="@+id/userPhotoImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/dafaultim"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Annonce reçue"
+        android:textSize="24dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:id="@+id/annonceRec"/>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/new_ann_client_corr">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Client :"
+            android:textSize="19dp"
+            android:layout_marginLeft="9dp"
+            android:textColor="@color/black"
+            android:padding="6dp"
+            android:id="@+id/NomCli"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:text="Villa"
+                android:textSize="14dp"
+                android:id="@+id/typeBien"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:text="locattion"
+                android:textSize="14dp"
+                android:id="@+id/tyAnn"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:text="Ben arous"
+                android:textSize="14dp"
+                android:id="@+id/gouv"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:text="Rades"
+                android:textSize="14dp"
+                android:id="@+id/addresse"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/editttcorr_annonce"
+                    android:layout_gravity="center"
+                    android:textSize="14dp"
+                    android:layout_marginHorizontal="20sp"
+                    android:padding="10dp"
+                    android:layout_margin="9dp"
+                    android:id="@+id/supficie"
+                    android:text="600"
+                    />
+
+                <TextView
+                    android:id="@+id/prix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="9dp"
+                    android:layout_marginHorizontal="20sp"
+                    android:background="@drawable/editttcorr_annonce"
+                    android:padding="10dp"
+                    android:text="3500"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:text="Nombre de chambre"
+                android:textSize="14dp"
+                android:id="@+id/nbCh"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:text="Descriptif du bien immobilier"
+                android:textSize="14dp"
+                android:id="@+id/Descrip"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/button2"
+                android:id="@+id/imgs"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:hint="Date de l'annonce"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:layout_marginTop="15dp"
+                android:textColorHint="@color/hintc"
+                android:layout_marginHorizontal="20sp"
+                android:id="@+id/dateAnn"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/editttcorr_annonce"
+                android:padding="10dp"
+                android:layout_margin="9dp"
+                android:hint="Durée de validation"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:layout_marginTop="15dp"
+                android:textColorHint="@color/hintc"
+                android:layout_marginHorizontal="20sp"
+                android:id="@+id/durVal"/>
+
+
+
+
+
+        </LinearLayout>
+        </ScrollView>
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
