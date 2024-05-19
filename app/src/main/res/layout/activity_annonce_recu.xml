@@ -190,11 +190,15 @@
                 android:textSize="14dp"
                 android:id="@+id/Descrip"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/button2"
-                android:id="@+id/imgs"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgRecyclerView"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20sp"
+                android:layout_marginHorizontal="20sp"
+                android:layout_marginVertical="20dp"
+                />
 
             <EditText
                 android:layout_width="match_parent"
