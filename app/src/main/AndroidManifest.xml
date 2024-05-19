@@ -18,13 +18,16 @@
             android:name=".tousLesAchEtLoc"
             android:exported="false" />
         <activity
+            android:name=".historique"
+            android:exported="false" />
+        <activity
+            android:name=".annrecu"
+            android:exported="false" />
+        <activity
             android:name=".Annonce_recu"
             android:exported="false" />
         <activity
             android:name=".annonce_cli_prp"
-            android:exported="false" />
-        <activity
-            android:name=".historique"
             android:exported="false" />
         <activity
             android:name=".historique_annonces"

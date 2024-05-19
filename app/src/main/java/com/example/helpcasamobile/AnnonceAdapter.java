@@ -1,6 +1,7 @@
 package com.example.helpcasamobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,14 @@ public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceV
         holder.gouvernorat.setText("Gouvernorat: " + annonce.getGouv());
         holder.proprietaire.setText("Propriétaire: " + annonce.getAnn());
         Picasso.get().load(annonce.getImageUrl()).into(holder.img);
-
+        holder.itemView.setOnClickListener(v -> {
+            // Trigger an intent if user is an agent
+            if (((annrecu) context).isAgent()) {
+                Intent intent = new Intent(context, Annonce_recu.class);
+                intent.putExtra("annonceId", annonce.getId());
+                context.startActivity(intent);
+            }
+        });
 
     }
 
