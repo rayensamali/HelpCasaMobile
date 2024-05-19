@@ -107,7 +107,6 @@ public class LastStep extends AppCompatActivity {
             startActivity(new Intent(LastStep.this, homeAgent.class));
             finish();
         }
-
         if("PROPRIETAIRE".equals(userType)){
             startActivity(new Intent(LastStep.this, home_CliPro.class));
             finish();

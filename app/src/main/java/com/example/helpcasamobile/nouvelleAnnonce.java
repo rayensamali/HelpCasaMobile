@@ -1,5 +1,7 @@
 package com.example.helpcasamobile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -19,24 +22,61 @@ public class nouvelleAnnonce extends AppCompatActivity {
     private String bien,ann,gouv;
 
     private String sbien,stypann,sgov,sadr,sprix,snbch,sdescriptif;
-    private EditText adr,sup,prix,nbch,Desc;
+    private EditText adr,sup,prix,nbch,desc;
     private TextView ajoutph,envoyer;
     private ImageView img;
+
+    private static final int PICK_IMAGE_REQUEST = 111;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nouvelle_annonce);
 
+        adr = findViewById(R.id.adresse);
+        sup = findViewById(R.id.superficie);
+        prix = findViewById(R.id.prix);
+        nbch = findViewById(R.id.nmbChamb);
+        desc = findViewById(R.id.dscrip);
 
-
+        ajoutph = findViewById(R.id.ajouter);
+        envoyer = findViewById(R.id.envoyer);
+        img = findViewById(R.id.imgview);
 
         setTypbien();
         setGouvernorat();
         setTypann();
 
+        ajoutph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    imageChooser();
+            }
+        });
+
+    }
+    private void imageChooser() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
+            Uri selectedImageUri = data != null ? data.getData() : null;
+            if (selectedImageUri != null) {
+                img.setImageURI(selectedImageUri);
+            }
+        }
+    }
     private void setTypbien(){
         typbien = findViewById(R.id.type_bien);
         String[] options = {"Appartement", "Villa", "Bureau", "Terrain"};

@@ -15,6 +15,9 @@
         android:theme="@style/Theme.HelpCasaMobile"
         tools:targetApi="31">
         <activity
+            android:name=".historique"
+            android:exported="false" />
+        <activity
             android:name=".Historique_vide"
             android:exported="false" />
         <activity

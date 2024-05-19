@@ -106,7 +106,7 @@
                         android:textColorHint="@color/hintc"
                         android:layout_marginHorizontal="20sp"
                         android:padding="10dp"
-                        android:id="@+id/Superficie"
+                        android:id="@+id/superficie"
                         android:inputType="numberDecimal"
                         />
                     <EditText
@@ -188,7 +188,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/ignore"
+                        android:id="@+id/envoyer"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

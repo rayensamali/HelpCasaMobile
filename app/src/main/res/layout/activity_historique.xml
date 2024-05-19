@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".nouvelleAnnonce"
+    tools:context=".historique"
     android:orientation="vertical"
-    android:background="@drawable/nvl_annonce_client"
     >
 
     <LinearLayout
@@ -20,7 +19,7 @@
         <ImageButton
             android:layout_width="60dp"
             android:layout_height="60dp"
-        />
+            />
 
     </LinearLayout>
 
@@ -53,22 +52,7 @@
             android:text="@string/hisviid"
             android:textColor="@color/black"
             android:textSize="20dp"/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    </LinearLayout>
 
 
 </LinearLayout>
