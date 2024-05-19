@@ -15,6 +15,9 @@
         android:theme="@style/Theme.HelpCasaMobile"
         tools:targetApi="31">
         <activity
+            android:name=".annonce_cli_prp"
+            android:exported="false" />
+        <activity
             android:name=".historique"
             android:exported="false" />
         <activity
