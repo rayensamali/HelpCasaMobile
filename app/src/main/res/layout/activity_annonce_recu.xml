@@ -223,8 +223,41 @@
                 android:layout_marginHorizontal="20sp"
                 android:id="@+id/durVal"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp"
+                android:layout_marginHorizontal="10dp"
+                >
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Refuser"
+                    android:background="@drawable/red"
+                    android:textColor="@color/white"
+                    android:id="@+id/refuser"
+                    android:textSize="20sp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    />
 
+                <TextView
+                    android:id="@+id/accepter"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/green"
+                    android:padding="10dp"
+                    android:text="Accepter"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:layout_marginLeft="5dp"
+                    />
+            </LinearLayout>
 
 
         </LinearLayout>
