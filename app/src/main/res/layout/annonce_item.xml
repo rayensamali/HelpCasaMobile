@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/editttcorr_annonce">
+    android:layout_height="200dp"
+    android:background="@drawable/editttcorr_annonce"
+    android:layout_margin="10dp"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,6 +41,7 @@
                     android:id="@+id/money"
                     android:layout_marginTop="3dp"/>
                 <TextView
+                    android:id="@+id/prix"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Prix :"
@@ -62,6 +65,7 @@
                     android:layout_height="wrap_content"
                     android:text="Type de bien:"
                     android:textSize="23sp"
+                    android:id="@+id/typbien"
                     android:layout_toRightOf="@id/tybien"
                     android:layout_marginLeft="3dp"/>
 
@@ -77,6 +81,7 @@
                     android:id="@+id/loc"
                     android:layout_marginTop="3dp"/>
                 <TextView
+                    android:id="@+id/gouvernorat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Gouvernorat :"
@@ -93,14 +98,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/proprietaire"
-                    android:id="@+id/prop"
+                    android:id="@+id/propl"
+
                     android:layout_marginTop="3dp"/>
                 <TextView
+                    android:id="@+id/prop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Propriétaire :"
                     android:textSize="23sp"
-                    android:layout_toRightOf="@id/prop"
+                    android:layout_toRightOf="@id/propl"
                     android:layout_marginLeft="3dp"/>
 
             </RelativeLayout>
