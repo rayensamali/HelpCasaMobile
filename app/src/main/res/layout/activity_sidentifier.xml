@@ -60,6 +60,7 @@
             android:layout_marginTop="20sp"
             android:layout_gravity="center"
             android:id="@+id/pass"
+            android:inputType="textPassword"
             />
         <TextView
             android:layout_width="250dp"
