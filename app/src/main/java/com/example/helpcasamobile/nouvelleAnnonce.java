@@ -7,16 +7,31 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class nouvelleAnnonce extends AppCompatActivity {
 
@@ -24,12 +39,16 @@ public class nouvelleAnnonce extends AppCompatActivity {
     private String bien, ann, gouv;
 
     private EditText adr, sup, prix, nbch, desc;
+    private boolean valide = false;
     private TextView ajoutph, envoyer;
     private RecyclerView imgRecyclerView;
 
     private static final int PICK_IMAGE_REQUEST = 111;
     private ArrayList<Uri> imageUris;
     private ImageAdapter imageAdapter;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +71,9 @@ public class nouvelleAnnonce extends AppCompatActivity {
         imgRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         imgRecyclerView.setAdapter(imageAdapter);
 
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
         setTypbien();
         setGouvernorat();
         setTypann();
@@ -63,6 +85,12 @@ public class nouvelleAnnonce extends AppCompatActivity {
             }
         });
 
+        envoyer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendAnnonce();
+            }
+        });
     }
 
     private void imageChooser() {
@@ -150,4 +178,88 @@ public class nouvelleAnnonce extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
+
+    private void sendAnnonce() {
+        String adresse = adr.getText().toString();
+        String superficie = sup.getText().toString();
+        String price = prix.getText().toString();
+        String numChambres = nbch.getText().toString();
+        String description = desc.getText().toString();
+
+        if (adresse.isEmpty() || superficie.isEmpty() || price.isEmpty() || numChambres.isEmpty() || description.isEmpty() || imageUris.isEmpty()) {
+            Toast.makeText(this, "Veuillez remplir tous les champs et ajouter au moins une photo", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+
+            // Create a new document in the user's annonces collection with a unique ID
+            String annonceId = UUID.randomUUID().toString();
+            Map<String, Object> annonce = new HashMap<>();
+            annonce.put("adresse", adresse);
+            annonce.put("superficie", superficie);
+            annonce.put("price", price);
+            annonce.put("numChambres", numChambres);
+            annonce.put("description", description);
+            annonce.put("bien", bien);
+            annonce.put("ann", ann);
+            annonce.put("gouv", gouv);
+            annonce.put("valid", valide);
+
+            // Upload images to Firebase Storage
+            for (int i = 0; i < imageUris.size(); i++) {
+                Uri imageUri = imageUris.get(i);
+                StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                        .child("users")
+                        .child(userId)
+                        .child(annonceId)
+                        .child("image" + i); // You can give a unique name to each image
+
+                // Upload the image
+                imageRef.putFile(imageUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // Image uploaded successfully
+                                // Get the download URL of the image if needed
+                                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        // You can save the download URL to Firestore if needed
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle image upload failure
+                                Toast.makeText(nouvelleAnnonce.this, "Failed to upload image " , Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+
+            // Save annonce details to Firestore
+            db.collection("users").document(userId)
+                    .collection("annonces").document(annonceId)
+                    .set(annonce)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(nouvelleAnnonce.this, "Annonce publiés avec succé", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(nouvelleAnnonce.this,home_CliPro.class));
+                                finish();
+                            } else {
+                                Toast.makeText(nouvelleAnnonce.this, "Probleme de publication", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
