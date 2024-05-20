@@ -2,6 +2,7 @@ package com.example.helpcasamobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +40,14 @@ public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceV
         holder.typeBien.setText("Type de bien: " + annonce.getBien());
         holder.gouvernorat.setText("Gouvernorat: " + annonce.getGouv());
         holder.proprietaire.setText("Propriétaire: " + annonce.getAnn());
-        Picasso.get().load(annonce.getImageUrl()).into(holder.img);
+        Picasso.get().load(annonce.getImageUrls().get(0)).into(holder.img);
         holder.itemView.setOnClickListener(v -> {
             // Trigger an intent if user is an agent
             if (((annrecu) context).isAgent()) {
                 Intent intent = new Intent(context, Annonce_recu.class);
+                Log.d("annn", "clicked");
                 intent.putExtra("annonceId", annonce.getId());
+                intent.putExtra("annonce", annonce);
                 context.startActivity(intent);
             }
         });

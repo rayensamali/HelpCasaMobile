@@ -1,7 +1,11 @@
-
 package com.example.helpcasamobile;
 
-public class Annonce {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.List;
+
+public class Annonce implements Parcelable {
     private String id;
     private String adresse;
     private String superficie;
@@ -11,13 +15,11 @@ public class Annonce {
     private String bien;
     private String ann;
     private String gouv;
-    private String imageUrl; // URL of the image
+    private List<String> imageUrls; // List of image URLs
 
-    // Default constructor
-
-
-    // Parameterized constructor
-    public Annonce(String id, String adresse, String superficie, String price, String numChambres, String description, String bien, String ann, String gouv, String imageUrl) {
+    // Constructor
+    public Annonce(String id, String adresse, String superficie, String price, String numChambres,
+                   String description, String bien, String ann, String gouv, List<String> imageUrls) {
         this.id = id;
         this.adresse = adresse;
         this.superficie = superficie;
@@ -27,87 +29,92 @@ public class Annonce {
         this.bien = bien;
         this.ann = ann;
         this.gouv = gouv;
-        this.imageUrl = imageUrl;
+        this.imageUrls = imageUrls;
     }
 
-    // Getters and setters
+    // Getters
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAdresse() {
         return adresse;
     }
 
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-
     public String getSuperficie() {
         return superficie;
-    }
-
-    public void setSuperficie(String superficie) {
-        this.superficie = superficie;
     }
 
     public String getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
     public String getNumChambres() {
         return numChambres;
-    }
-
-    public void setNumChambres(String numChambres) {
-        this.numChambres = numChambres;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getBien() {
         return bien;
-    }
-
-    public void setBien(String bien) {
-        this.bien = bien;
     }
 
     public String getAnn() {
         return ann;
     }
 
-    public void setAnn(String ann) {
-        this.ann = ann;
-    }
-
     public String getGouv() {
         return gouv;
     }
 
-    public void setGouv(String gouv) {
-        this.gouv = gouv;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    // Parcelable implementation
+    protected Annonce(Parcel in) {
+        id = in.readString();
+        adresse = in.readString();
+        superficie = in.readString();
+        price = in.readString();
+        numChambres = in.readString();
+        description = in.readString();
+        bien = in.readString();
+        ann = in.readString();
+        gouv = in.readString();
+        imageUrls = in.createStringArrayList();
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public static final Creator<Annonce> CREATOR = new Creator<Annonce>() {
+        @Override
+        public Annonce createFromParcel(Parcel in) {
+            return new Annonce(in);
+        }
+
+        @Override
+        public Annonce[] newArray(int size) {
+            return new Annonce[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adresse);
+        dest.writeString(superficie);
+        dest.writeString(price);
+        dest.writeString(numChambres);
+        dest.writeString(description);
+        dest.writeString(bien);
+        dest.writeString(ann);
+        dest.writeString(gouv);
+        dest.writeStringList(imageUrls);
     }
 }

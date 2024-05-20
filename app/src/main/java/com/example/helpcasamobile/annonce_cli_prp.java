@@ -27,6 +27,9 @@ public class annonce_cli_prp extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
 
+    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 100; // Example value, adjust as needed
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +66,7 @@ public class annonce_cli_prp extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     for (DocumentSnapshot document : task.getResult()) {
                                                         Boolean isValid = document.getBoolean("valid");
-                                                        if (isValid != null && isValid) {
+                                                        if (isValid != null && isValid == false) {
                                                             String id = document.getId();
                                                             String adresse = document.getString("adresse");
                                                             String superficie = document.getString("superficie");
@@ -74,21 +77,28 @@ public class annonce_cli_prp extends AppCompatActivity {
                                                             String ann = document.getString("ann");
                                                             String gouv = document.getString("gouv");
 
-                                                            // Fetch the image URL from Firebase Storage
-                                                            StorageReference imageRef = storage.getReference()
-                                                                    .child("users")
-                                                                    .child(userId)
-                                                                    .child(id)
-                                                                    .child("image0");
+                                                            // Fetch all image URLs from Firebase Storage
+                                                            List<String> imageUrls = new ArrayList<>();
+                                                            for (int i = 0; i < MAX_IMAGES_PER_ANNOUNCEMENT; i++) {
+                                                                StorageReference imageRef = storage.getReference()
+                                                                        .child("users")
+                                                                        .child(userId)
+                                                                        .child(id)
+                                                                        .child("image" + i);
+                                                                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                                                    String imageUrl = uri.toString();
+                                                                    imageUrls.add(imageUrl);
 
-                                                            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                                                String imageUrl = uri.toString();
-                                                                Annonce annonce = new Annonce(id, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUrl);
-                                                                annonceList.add(annonce);
-                                                                annonceAdapter.notifyDataSetChanged();
-                                                            }).addOnFailureListener(e -> {
-                                                                Log.e("Fetch Image", "Failed to fetch image for annonce: " + id, e);
-                                                            });
+                                                                    // If all images are fetched, create the announcement
+                                                                    if (imageUrls.size() == MAX_IMAGES_PER_ANNOUNCEMENT) {
+                                                                        Annonce annonce = new Annonce(id, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUrls);
+                                                                        annonceList.add(annonce);
+                                                                        annonceAdapter.notifyDataSetChanged();
+                                                                    }
+                                                                }).addOnFailureListener(e -> {
+                                                                    Log.e("Fetch Image", "Failed to fetch image for annonce: " + id, e);
+                                                                });
+                                                            }
                                                         }
                                                     }
                                                 } else {

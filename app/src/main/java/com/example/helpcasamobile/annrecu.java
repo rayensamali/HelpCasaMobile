@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -29,8 +31,10 @@ public class annrecu extends AppCompatActivity {
     private List<Annonce> annonceList;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
-    private SharedPreferences sharedPreferences;
     private boolean isAgent = false;
+
+    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5; // Example value, adjust as needed
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +50,27 @@ public class annrecu extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-
-        fetchAllAnnonces();
+        fetchUserTypeAndAnnonces();
 
 
     }
+    private void fetchUserTypeAndAnnonces() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+
+            db.collection("users").document(userId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String userType = documentSnapshot.getString("type");
+                            isAgent = true;
+                            fetchAllAnnonces();
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("Fetch User Type", "Failed to fetch user type", e));
+        }
+    }
 
 
     private void fetchAllAnnonces() {
@@ -83,22 +102,28 @@ public class annrecu extends AppCompatActivity {
                                                             String ann = document.getString("ann");
                                                             String gouv = document.getString("gouv");
 
-                                                            // Fetch the image URL from Firebase Storage
-                                                            StorageReference imageRef = storage.getReference()
-                                                                    .child("users")
-                                                                    .child(userId)
-                                                                    .child(id)
-                                                                    .child("image0");
+                                                            // Fetch all image URLs from Firebase Storage
+                                                            List<String> imageUrls = new ArrayList<>();
+                                                            for (int i = 0; i < MAX_IMAGES_PER_ANNOUNCEMENT; i++) {
+                                                                StorageReference imageRef = storage.getReference()
+                                                                        .child("users")
+                                                                        .child(userId)
+                                                                        .child(id)
+                                                                        .child("image" + i);
+                                                                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                                                    String imageUrl = uri.toString();
+                                                                    imageUrls.add(imageUrl);
 
-                                                            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                                                String imageUrl = uri.toString();
-                                                                Annonce annonce = new Annonce(id, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUrl);
-                                                                annonceList.add(annonce);
-                                                                Log.d("mut", "added");
-                                                                annonceAdapter.notifyDataSetChanged();
-                                                            }).addOnFailureListener(e -> {
-                                                                Log.e("Fetch Image", "Failed to fetch image for annonce: " + id, e);
-                                                            });
+                                                                    // If all images are fetched, create the announcement
+                                                                    if (imageUrls.size() == MAX_IMAGES_PER_ANNOUNCEMENT) {
+                                                                        Annonce annonce = new Annonce(id, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUrls);
+                                                                        annonceList.add(annonce);
+                                                                        annonceAdapter.notifyDataSetChanged();
+                                                                    }
+                                                                }).addOnFailureListener(e -> {
+                                                                    Log.e("Fetch Image", "Failed to fetch image for annonce: " + id, e);
+                                                                });
+                                                            }
                                                         }
                                                     }
                                                 } else {
@@ -113,6 +138,7 @@ public class annrecu extends AppCompatActivity {
                     }
                 });
     }
+
 
     public boolean isAgent() {
         return isAgent;

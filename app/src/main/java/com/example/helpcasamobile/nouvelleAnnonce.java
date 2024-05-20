@@ -2,6 +2,7 @@ package com.example.helpcasamobile;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,6 +50,7 @@ public class nouvelleAnnonce extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private static final int MAX_PHOTOS = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,10 @@ public class nouvelleAnnonce extends AppCompatActivity {
     private void imageChooser() {
         Intent i = new Intent();
         i.setType("image/*");
-        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        // Check if platform supports selecting multiple images
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
         i.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(i, "Select Pictures"), PICK_IMAGE_REQUEST);
     }
@@ -108,11 +113,11 @@ public class nouvelleAnnonce extends AppCompatActivity {
             if (data != null) {
                 if (data.getClipData() != null) {
                     int count = data.getClipData().getItemCount();
-                    for (int i = 0; i < count; i++) {
+                    for (int i = 0; i < count && imageUris.size() < MAX_PHOTOS; i++) {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
                         imageUris.add(imageUri);
                     }
-                } else if (data.getData() != null) {
+                } else if (data.getData() != null && imageUris.size() < MAX_PHOTOS) {
                     Uri imageUri = data.getData();
                     imageUris.add(imageUri);
                 }
