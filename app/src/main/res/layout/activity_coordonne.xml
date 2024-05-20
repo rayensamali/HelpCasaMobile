@@ -209,7 +209,7 @@
                     <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/numMob"
+                        android:hint="numero"
                         android:background="@drawable/edittxt"
                         android:layout_gravity="center"
                         android:textSize="20dp"

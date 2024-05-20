@@ -96,6 +96,146 @@
                 android:padding="5dp"
                 android:textColor="@color/black"/>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/money"
+                    android:id="@+id/money"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:id="@+id/prix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Prix :"
+                    android:textSize="23sp"
+                    android:layout_toRightOf="@id/money"
+                    android:layout_marginLeft="3dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/tybien"
+                    android:id="@+id/tybien"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Type de bien:"
+                    android:textSize="23sp"
+                    android:id="@+id/typbien"
+                    android:layout_toRightOf="@id/tybien"
+                    android:layout_marginLeft="3dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/location"
+                    android:id="@+id/loc"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:id="@+id/gouvernorat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gouvernorat :"
+                    android:textSize="23sp"
+                    android:layout_toRightOf="@id/loc"
+                    android:layout_marginLeft="3dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/date"
+                    android:id="@+id/datt"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"/>
+                <TextView
+                    android:id="@+id/datAnn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date de l’annonce : "
+                    android:textSize="23sp"
+                    android:layout_toRightOf="@id/datt"
+                    android:layout_marginLeft="3dp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Type de transaction :"
+                android:textSize="23sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:id="@+id/tyTrans"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description :"
+                android:textSize="23sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:id="@+id/Desc"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button3"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:hint="Description"
+                android:textColorHint="@color/hintc"
+                android:padding="10dp"
+                android:id="@+id/boxDes"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgsDuBien"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20sp"
+                android:layout_marginHorizontal="20sp"
+                android:layout_marginVertical="20dp"
+                />
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Réserver"
+                android:id="@+id/reserv"
+                android:background="@drawable/green_reserv"
+                android:textColor="@color/black"
+                android:textSize="19dp"
+                android:padding="6dp"
+                android:layout_marginLeft="250dp"
+                android:gravity="center"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="20dp"/>
 
 
 
