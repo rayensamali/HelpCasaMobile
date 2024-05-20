@@ -85,6 +85,7 @@
         android:text="@string/app"
         android:textColor="@color/gris"
         android:layout_marginLeft="10dp"
+        android:id="@+id/Aprop"
         />
 </LinearLayout>
     
