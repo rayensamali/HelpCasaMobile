@@ -11,14 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
     private ArrayList<Uri> imageUris;
     private Context context;
 
-    public ImageAdapter(ArrayList<Uri> imageUris) {
-        this.imageUris = imageUris;
+    public ImageAdapter(List<Uri> imageUris) {
+        this.imageUris= (ArrayList<Uri>) imageUris;
     }
 
     @NonNull

@@ -1,8 +1,10 @@
 package com.example.helpcasamobile;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Annonce implements Parcelable {
@@ -15,11 +17,11 @@ public class Annonce implements Parcelable {
     private String bien;
     private String ann;
     private String gouv;
-    private List<String> imageUrls; // List of image URLs
+    private List<Uri> imageUrls; // List of image URLs
 
     // Constructor
     public Annonce(String id, String adresse, String superficie, String price, String numChambres,
-                   String description, String bien, String ann, String gouv, List<String> imageUrls) {
+                   String description, String bien, String ann, String gouv, List<Uri> imageUrls) {
         this.id = id;
         this.adresse = adresse;
         this.superficie = superficie;
@@ -69,7 +71,7 @@ public class Annonce implements Parcelable {
         return gouv;
     }
 
-    public List<String> getImageUrls() {
+    public List<Uri> getImageUrls() {
         return imageUrls;
     }
 
@@ -84,7 +86,8 @@ public class Annonce implements Parcelable {
         bien = in.readString();
         ann = in.readString();
         gouv = in.readString();
-        imageUrls = in.createStringArrayList();
+        imageUrls = new ArrayList<>();
+        in.readTypedList(imageUrls, Uri.CREATOR);
     }
 
     public static final Creator<Annonce> CREATOR = new Creator<Annonce>() {
@@ -115,6 +118,6 @@ public class Annonce implements Parcelable {
         dest.writeString(bien);
         dest.writeString(ann);
         dest.writeString(gouv);
-        dest.writeStringList(imageUrls);
+        dest.writeTypedList(imageUrls);
     }
 }
