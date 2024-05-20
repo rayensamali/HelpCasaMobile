@@ -2,6 +2,7 @@ package com.example.helpcasamobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +17,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceViewHolder>{
+public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceViewHolder> {
     private List<Annonce> annonces;
     private Context context;
+    private SharedPreferences sh;
 
     public AnnonceAdapter(List<Annonce> annonces, Context context) {
         this.annonces = annonces;
         this.context = context;
+        this.sh = context.getSharedPreferences("userType", Context.MODE_PRIVATE); // Initialize SharedPreferences here
     }
 
     @NonNull
@@ -41,17 +44,19 @@ public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceV
         holder.gouvernorat.setText("Gouvernorat: " + annonce.getGouv());
         holder.proprietaire.setText("Propriétaire: " + annonce.getAnn());
         Picasso.get().load(annonce.getImageUrls().get(0)).into(holder.img);
-        holder.itemView.setOnClickListener(v -> {
-            // Trigger an intent if user is an agent
-            if (((annrecu) context).isAgent()) {
-                Intent intent = new Intent(context, Annonce_recu.class);
-                Log.d("annn", "clicked");
-                intent.putExtra("annonceId", annonce.getId());
-                intent.putExtra("annonce", annonce);
-                context.startActivity(intent);
-            }
-        });
 
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent;
+            if (sh.getString("type","").equals("agent")) {
+                intent = new Intent(context, Annonce_recu.class);
+            } else {
+                intent = new Intent(context, Annonce_detaile.class);
+            }
+            Log.d("annn", "clicked");
+            intent.putExtra("annonceId", annonce.getId());
+            intent.putExtra("annonce", annonce);
+            context.startActivity(intent);
+        });
     }
 
     @Override

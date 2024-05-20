@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -31,6 +33,9 @@ public class sidentifier extends AppCompatActivity {
     FirebaseFirestore db;
     private Intent i;
 
+
+    private SharedPreferences sh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +48,7 @@ public class sidentifier extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         noacc = findViewById(R.id.noacc);
-
+        sh = getSharedPreferences("userType", Context.MODE_PRIVATE);
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,6 +81,8 @@ public class sidentifier extends AppCompatActivity {
                                     String userId = mUser.getUid();
                                     // Retrieve user type from Firestore
                                     getUserType(userId);
+
+
                                 }
                             } else {
                                 Toast.makeText(sidentifier.this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -95,10 +102,18 @@ public class sidentifier extends AppCompatActivity {
                             if (document.exists()) {
                                 String userType = document.getString("type");
                                 if("agent".equals(userType)){
+                                    SharedPreferences.Editor editor = sh.edit();
+                                    //put user type in shared preferences
+                                    editor.putString("type", userType);
+                                    editor.apply();
                                     startActivity(new Intent(sidentifier.this,homeAgent.class));
                                     finish();
                                 }
                                 if("PROPRIETAIRE".equals(userType)){
+                                    SharedPreferences.Editor editor = sh.edit();
+                                    //put user type in shared preferences
+                                    editor.putString("type", userType);
+                                    editor.apply();
                                     startActivity(new Intent(sidentifier.this,home_CliPro.class));
                                     finish();
                                 }
