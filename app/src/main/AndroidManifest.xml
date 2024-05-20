@@ -15,6 +15,9 @@
         android:theme="@style/Theme.HelpCasaMobile"
         tools:targetApi="31">
         <activity
+            android:name=".Annonce_detaile"
+            android:exported="false" />
+        <activity
             android:name=".tousLesAchEtLoc"
             android:exported="false" />
         <activity
