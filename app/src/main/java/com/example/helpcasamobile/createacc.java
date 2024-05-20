@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class createacc extends AppCompatActivity {
     private RadioGroup rdg;
     private TextView button;
+
+
     private Intent i;
 
     @Override
@@ -40,9 +42,9 @@ public class createacc extends AppCompatActivity {
                     i.putExtra("KEY", "responsableComm");
                     startActivity(i);
                 }
-            } });
+            }
+        });
 
 
-
-        }
+    }
 }

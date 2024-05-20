@@ -23,11 +23,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class sidentifier extends AppCompatActivity {
     private EditText mail, password;
     private TextView connect;
+    private TextView noacc;
     private String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     FirebaseFirestore db;
+    private Intent i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class sidentifier extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        noacc = findViewById(R.id.noacc);
 
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,5 +113,22 @@ public class sidentifier extends AppCompatActivity {
                 });
             }
         });
+
+        noacc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId()==R.id.noacc){
+                    i = new Intent(sidentifier.this, createacc.class);
+                    startActivity(i);
+
+                }
+
+            }
+
+
+
+        });
+
+
     }
 }
