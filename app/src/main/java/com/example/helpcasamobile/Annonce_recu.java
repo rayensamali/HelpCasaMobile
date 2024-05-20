@@ -1,17 +1,20 @@
 package com.example.helpcasamobile;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
-
 public class Annonce_recu extends AppCompatActivity {
 
-    private Intent i;
+    private Intent intent;
+
+    // Strings to store data
     private String annonceId;
     private String adresse;
     private String superficie;
@@ -21,19 +24,23 @@ public class Annonce_recu extends AppCompatActivity {
     private String bien;
     private String ann;
     private String gouv;
-
-
+    private List<Uri> imageUrls;
     private TextView tpB,tpann,gov,adr,supr,prx,nbch,desc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_annonce_recu);
-        i = getIntent();
-        if(i != null){
-            annonceId = i.getStringExtra("annonceId");
-            Annonce annonce = i.getParcelableExtra("annonce");
-            if(annonce != null){
+
+        intent = getIntent();
+        if (intent != null) {
+            // Retrieve the data from Intent extras
+            annonceId = intent.getStringExtra("annonceId");
+            Annonce annonce = intent.getParcelableExtra("annonce");
+
+            // Check if data is not null
+            if (annonce != null) {
+                // Now you have all the data of the Annonce object
                 adresse = annonce.getAdresse();
                 superficie = annonce.getSuperficie();
                 price = annonce.getPrice();
@@ -42,9 +49,17 @@ public class Annonce_recu extends AppCompatActivity {
                 bien = annonce.getBien();
                 ann = annonce.getAnn();
                 gouv = annonce.getGouv();
-                List<String> imageUrls = annonce.getImageUrls();
+                imageUrls = annonce.getImageUrls();
             }
         }
+
+
+        if (imageUrls != null) {
+            for (Uri uri : imageUrls) {
+                Log.d("Image URL", uri.toString());
+            }
+        }
+
         tpB = findViewById(R.id.typeBien);
         tpB.setText(bien);
         tpann = findViewById(R.id.tyAnn);
@@ -62,5 +77,4 @@ public class Annonce_recu extends AppCompatActivity {
         desc = findViewById(R.id.Descrip);
         desc.setText(description);
     }
-
 }

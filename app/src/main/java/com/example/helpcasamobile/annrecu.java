@@ -1,8 +1,6 @@
 package com.example.helpcasamobile;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -35,7 +33,6 @@ public class annrecu extends AppCompatActivity {
 
     private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5; // Example value, adjust as needed
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +48,8 @@ public class annrecu extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         fetchUserTypeAndAnnonces();
-
-
     }
+
     private void fetchUserTypeAndAnnonces() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -64,7 +60,7 @@ public class annrecu extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             String userType = documentSnapshot.getString("type");
-                            isAgent = true;
+                            isAgent = "agent".equals(userType); // Assuming "agent" is the type value for agents
                             fetchAllAnnonces();
                         }
                     })
@@ -72,73 +68,73 @@ public class annrecu extends AppCompatActivity {
         }
     }
 
-
     private void fetchAllAnnonces() {
         db.collection("users")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot userDocument : task.getResult()) {
-                                String userId = userDocument.getId();
-
-                                db.collection("users").document(userId).collection("annonces")
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (DocumentSnapshot document : task.getResult()) {
-                                                        Boolean isValid = document.getBoolean("valid");
-                                                        if (isValid != null && isValid == false) {
-                                                            String id = document.getId();
-                                                            String adresse = document.getString("adresse");
-                                                            String superficie = document.getString("superficie");
-                                                            String price = document.getString("price");
-                                                            String numChambres = document.getString("numChambres");
-                                                            String description = document.getString("description");
-                                                            String bien = document.getString("bien");
-                                                            String ann = document.getString("ann");
-                                                            String gouv = document.getString("gouv");
-
-                                                            // Fetch all image URLs from Firebase Storage
-                                                            List<String> imageUrls = new ArrayList<>();
-                                                            for (int i = 0; i < MAX_IMAGES_PER_ANNOUNCEMENT; i++) {
-                                                                StorageReference imageRef = storage.getReference()
-                                                                        .child("users")
-                                                                        .child(userId)
-                                                                        .child(id)
-                                                                        .child("image" + i);
-                                                                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                                                    String imageUrl = uri.toString();
-                                                                    imageUrls.add(imageUrl);
-
-                                                                    // If all images are fetched, create the announcement
-                                                                    if (imageUrls.size() == MAX_IMAGES_PER_ANNOUNCEMENT) {
-                                                                        Annonce annonce = new Annonce(id, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUrls);
-                                                                        annonceList.add(annonce);
-                                                                        annonceAdapter.notifyDataSetChanged();
-                                                                    }
-                                                                }).addOnFailureListener(e -> {
-                                                                    Log.e("Fetch Image", "Failed to fetch image for annonce: " + id, e);
-                                                                });
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    Log.e("Fetch Annonce", "Error getting documents: ", task.getException());
-                                                }
-                                            }
-                                        });
-                            }
-                        } else {
-                            Log.e("Fetch Users", "Error getting users: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot userDocument : task.getResult()) {
+                            String userId = userDocument.getId();
+                            fetchAnnoncesForUser(userId);
                         }
+                    } else {
+                        Log.e("Fetch Users", "Error getting users: ", task.getException());
                     }
                 });
     }
 
+    private void fetchAnnoncesForUser(String userId) {
+        db.collection("users").document(userId).collection("annonces")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Boolean isValid = document.getBoolean("valid");
+                            if (isValid != null && !isValid) {
+                                String id = document.getId();
+                                String adresse = document.getString("adresse");
+                                String superficie = document.getString("superficie");
+                                String price = document.getString("price");
+                                String numChambres = document.getString("numChambres");
+                                String description = document.getString("description");
+                                String bien = document.getString("bien");
+                                String ann = document.getString("ann");
+                                String gouv = document.getString("gouv");
+
+                                // Fetch images for this announcement
+                                fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv);
+                            }
+                        }
+                    } else {
+                        Log.e("Fetch Annonce", "Error getting documents: ", task.getException());
+                    }
+                });
+    }
+
+    private void fetchImagesForAnnonce(String userId, String annonceId, String adresse, String superficie, String price, String numChambres, String description, String bien, String ann, String gouv) {
+        List<Uri> imageUris = new ArrayList<>();
+        StorageReference imagesRef = storage.getReference().child("users").child(userId).child(annonceId);
+
+        for (int i = 0; i < MAX_IMAGES_PER_ANNOUNCEMENT; i++) {
+            StorageReference imageRef = imagesRef.child("image" + i);
+            int finalI = i;
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                imageUris.add(uri);
+                if (finalI == MAX_IMAGES_PER_ANNOUNCEMENT - 1 || imageUris.size() == finalI + 1) {
+                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris);
+                    annonceList.add(annonce);
+                    annonceAdapter.notifyDataSetChanged();
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("Fetch Image", "Failed to fetch image for annonce: " + annonceId, e);
+                if (finalI == MAX_IMAGES_PER_ANNOUNCEMENT - 1) {
+                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris);
+                    annonceList.add(annonce);
+                    annonceAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
 
     public boolean isAgent() {
         return isAgent;
