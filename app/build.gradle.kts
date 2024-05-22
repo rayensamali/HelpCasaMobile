@@ -33,6 +33,12 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.firebase:firebase-firestore:24.0.0")
+    implementation ("com.google.firebase:firebase-auth:21.0.1")
+    implementation ("com.google.firebase:firebase-storage:20.0.0")
+    implementation ("com.google.android.gms:play-services-tasks:18.0.1")
+
+
     implementation ("com.squareup.picasso:picasso:2.8")
     implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.11.0")

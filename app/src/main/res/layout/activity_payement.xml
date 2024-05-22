@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".payement">
+
+    <TextView
+        android:id="@+id/prix"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Prix:"
+        android:gravity="center_vertical"/>
+
+    <RadioGroup
+        android:id="@+id/paymentMethodGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioCash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Espèces" />
+
+        <RadioButton
+            android:id="@+id/radioCheque"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chèque" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/paymentDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date du paiement"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/chequeNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Numéro de chèque"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/bankName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom de la banque"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/confirmPaymentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirmer le paiement"/>
+
+    <TextView
+        android:id="@+id/commissionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Commission:"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/totalAmountText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Montant total:"
+        android:gravity="center_vertical"/>
+
+</LinearLayout>

@@ -1,7 +1,6 @@
 package com.example.helpcasamobile;
 
 import android.content.Intent;
-import android.net.LinkAddress;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,28 +38,38 @@ public class Annonce_recu extends AppCompatActivity {
     private String ann;
     private String gouv;
     private List<Uri> imageUrls;
-    private TextView tpB,tpann,gov,adr,supr,prx,nbch,desc,accept;
+    private TextView tpB, tpann, gov, adr, supr, prx, nbch, desc, accept, refuser;
 
     private RecyclerView imgRecyclerView;
     private FirebaseFirestore db;
 
-
     private Annonce annonce;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_annonce_recu);
-    imgRecyclerView = findViewById(R.id.imgRecyclerView);
+
+        refuser = findViewById(R.id.refuser);
+
+        imgRecyclerView = findViewById(R.id.imgRecyclerView);
 
         db = FirebaseFirestore.getInstance();
 
-    accept = findViewById(R.id.accepter);
-    accept.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            accepterann();
-        }
-    });
+        accept = findViewById(R.id.accepter);
+
+        refuser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                accepterann();
+            }
+        });
         intent = getIntent();
         if (intent != null) {
             // Retrieve the data from Intent extras
@@ -80,7 +89,6 @@ public class Annonce_recu extends AppCompatActivity {
                 imageUrls = annonce.getImageUrls();
             }
         }
-
 
         if (imageUrls != null) {
             for (Uri uri : imageUrls) {
@@ -105,17 +113,13 @@ public class Annonce_recu extends AppCompatActivity {
         desc = findViewById(R.id.Descrip);
         desc.setText(description);
 
-        List<Uri> imageUris = new ArrayList<>();
-        imageUris = annonce.getImageUrls();
-        ImagerecuAdapter imageAdapter = new ImagerecuAdapter(imageUris,Annonce_recu.this);
-        imgRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        List<Uri> imageUris = new ArrayList<>(annonce.getImageUrls());
+        ImagerecuAdapter imageAdapter = new ImagerecuAdapter(imageUris, Annonce_recu.this);
+        imgRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         imgRecyclerView.setAdapter(imageAdapter);
-
-
-
     }
 
-    private void accepterann(){
+    private void accepterann() {
         if (annonceId != null) {
             db.collection("users")
                     .get()
@@ -123,11 +127,8 @@ public class Annonce_recu extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                boolean annonceFound = false;
-
                                 for (DocumentSnapshot userDocument : task.getResult()) {
                                     String userId = userDocument.getId();
-
                                     db.collection("users")
                                             .document(userId)
                                             .collection("annonces")
@@ -165,4 +166,3 @@ public class Annonce_recu extends AppCompatActivity {
         }
     }
 }
-

@@ -11,16 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class annrecu extends AppCompatActivity {
 
@@ -29,9 +31,9 @@ public class annrecu extends AppCompatActivity {
     private List<Annonce> annonceList;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
-    private boolean isAgent = false;
+    private Set<String> annonceIds;
 
-    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5; // Example value, adjust as needed
+    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,40 +44,24 @@ public class annrecu extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         annonceList = new ArrayList<>();
-        annonceAdapter = new AnnonceAdapter(annonceList, this);
+        annonceAdapter = new AnnonceAdapter(annonceList, this, false);
         recyclerView.setAdapter(annonceAdapter);
 
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-        fetchUserTypeAndAnnonces();
+        annonceIds = new HashSet<>();
+
+        fetchUsersWithAnnonces();
     }
 
-    private void fetchUserTypeAndAnnonces() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-
-            db.collection("users").document(userId).get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String userType = documentSnapshot.getString("type");
-                            isAgent = "agent".equals(userType); // Assuming "agent" is the type value for agents
-                            fetchAllAnnonces();
-                        }
-                    })
-                    .addOnFailureListener(e -> Log.e("Fetch User Type", "Failed to fetch user type", e));
-        }
-    }
-
-    private void fetchAllAnnonces() {
+    private void fetchUsersWithAnnonces() {
         db.collection("users")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot userDocument : task.getResult()) {
                             String userId = userDocument.getId();
-                            fetchAnnoncesForUser(userId);
+                            checkUserHasAnnonces(userId);
                         }
                     } else {
                         Log.e("Fetch Users", "Error getting users: ", task.getException());
@@ -83,15 +69,25 @@ public class annrecu extends AppCompatActivity {
                 });
     }
 
+    private void checkUserHasAnnonces(String userId) {
+        db.collection("users").document(userId).collection("annonces")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        fetchAnnoncesForUser(userId);
+                    }
+                });
+    }
+
     private void fetchAnnoncesForUser(String userId) {
         db.collection("users").document(userId).collection("annonces")
+                .whereEqualTo("valid", false) // Only fetch invalid announcements
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
-                            Boolean isValid = document.getBoolean("valid");
-                            if (isValid != null && !isValid) {
-                                String id = document.getId();
+                            String id = document.getId();
+                            if (!annonceIds.contains(id)) {
                                 String adresse = document.getString("adresse");
                                 String superficie = document.getString("superficie");
                                 String price = document.getString("price");
@@ -101,7 +97,7 @@ public class annrecu extends AppCompatActivity {
                                 String ann = document.getString("ann");
                                 String gouv = document.getString("gouv");
 
-                                // Fetch images for this announcement
+                                annonceIds.add(id);
                                 fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv);
                             }
                         }
@@ -115,28 +111,27 @@ public class annrecu extends AppCompatActivity {
         List<Uri> imageUris = new ArrayList<>();
         StorageReference imagesRef = storage.getReference().child("users").child(userId).child(annonceId);
 
+        List<Task<Uri>> tasks = new ArrayList<>();
         for (int i = 0; i < MAX_IMAGES_PER_ANNOUNCEMENT; i++) {
             StorageReference imageRef = imagesRef.child("image" + i);
-            int finalI = i;
-            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                imageUris.add(uri);
-                if (finalI == MAX_IMAGES_PER_ANNOUNCEMENT - 1 || imageUris.size() == finalI + 1) {
-                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris);
-                    annonceList.add(annonce);
-                    annonceAdapter.notifyDataSetChanged();
+            tasks.add(imageRef.getDownloadUrl().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    imageUris.add(task.getResult());
+                } else {
+                    Exception e = task.getException();
+                    if (e instanceof StorageException && ((StorageException) e).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                        Log.e("Fetch Images", "Image not found: " + "image");
+                    } else {
+                        Log.e("Fetch Images", "Failed to fetch image: " + "image" , e);
+                    }
                 }
-            }).addOnFailureListener(e -> {
-                Log.e("Fetch Image", "Failed to fetch image for annonce: " + annonceId, e);
-                if (finalI == MAX_IMAGES_PER_ANNOUNCEMENT - 1) {
-                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris);
-                    annonceList.add(annonce);
-                    annonceAdapter.notifyDataSetChanged();
-                }
-            });
+            }));
         }
-    }
 
-    public boolean isAgent() {
-        return isAgent;
+        Tasks.whenAllComplete(tasks).addOnCompleteListener(task -> {
+            Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris, false);
+            annonceList.add(annonce);
+            annonceAdapter.notifyDataSetChanged();
+        });
     }
 }

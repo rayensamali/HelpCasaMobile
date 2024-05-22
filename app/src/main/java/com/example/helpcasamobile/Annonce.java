@@ -18,10 +18,11 @@ public class Annonce implements Parcelable {
     private String ann;
     private String gouv;
     private List<Uri> imageUrls; // List of image URLs
+    private boolean etat; // Validation state
 
     // Constructor
     public Annonce(String id, String adresse, String superficie, String price, String numChambres,
-                   String description, String bien, String ann, String gouv, List<Uri> imageUrls) {
+                   String description, String bien, String ann, String gouv, List<Uri> imageUrls, boolean etat) {
         this.id = id;
         this.adresse = adresse;
         this.superficie = superficie;
@@ -32,9 +33,10 @@ public class Annonce implements Parcelable {
         this.ann = ann;
         this.gouv = gouv;
         this.imageUrls = imageUrls;
+        this.etat = etat;
     }
 
-    // Getters
+    // Getters and setters
     public String getId() {
         return id;
     }
@@ -75,6 +77,14 @@ public class Annonce implements Parcelable {
         return imageUrls;
     }
 
+    public boolean getEtat() {
+        return etat;
+    }
+
+    public void setEtat(boolean etat) {
+        this.etat = etat;
+    }
+
     // Parcelable implementation
     protected Annonce(Parcel in) {
         id = in.readString();
@@ -88,23 +98,7 @@ public class Annonce implements Parcelable {
         gouv = in.readString();
         imageUrls = new ArrayList<>();
         in.readTypedList(imageUrls, Uri.CREATOR);
-    }
-
-    public static final Creator<Annonce> CREATOR = new Creator<Annonce>() {
-        @Override
-        public Annonce createFromParcel(Parcel in) {
-            return new Annonce(in);
-        }
-
-        @Override
-        public Annonce[] newArray(int size) {
-            return new Annonce[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+        etat = in.readByte() != 0;
     }
 
     @Override
@@ -119,5 +113,23 @@ public class Annonce implements Parcelable {
         dest.writeString(ann);
         dest.writeString(gouv);
         dest.writeTypedList(imageUrls);
+        dest.writeByte((byte) (etat ? 1 : 0));
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Annonce> CREATOR = new Creator<Annonce>() {
+        @Override
+        public Annonce createFromParcel(Parcel in) {
+            return new Annonce(in);
+        }
+
+        @Override
+        public Annonce[] newArray(int size) {
+            return new Annonce[size];
+        }
+    };
 }

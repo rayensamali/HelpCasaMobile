@@ -9,11 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -28,7 +25,7 @@ public class annonce_cli_prp extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
 
-    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5; // Adjust as needed
+    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,29 +36,36 @@ public class annonce_cli_prp extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         annonceList = new ArrayList<>();
-        annonceAdapter = new AnnonceAdapter(annonceList, this);
+        annonceAdapter = new AnnonceAdapter(annonceList, this,false);
         recyclerView.setAdapter(annonceAdapter);
 
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        fetchAllAnnonces();
+        fetchAllUsersWithAnnonces();
     }
 
-    private void fetchAllAnnonces() {
+    private void fetchAllUsersWithAnnonces() {
         db.collection("users")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot userDocument : task.getResult()) {
-                                String userId = userDocument.getId();
-                                fetchAnnoncesForUser(userId);
-                            }
-                        } else {
-                            Log.e("Fetch Users", "Error getting users: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot userDocument : task.getResult()) {
+                            String userId = userDocument.getId();
+                            checkUserHasAnnonces(userId);
                         }
+                    } else {
+                        Log.e("Fetch Users", "Error getting users: ", task.getException());
+                    }
+                });
+    }
+
+    private void checkUserHasAnnonces(String userId) {
+        db.collection("users").document(userId).collection("annonces")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        fetchAnnoncesForUser(userId);
                     }
                 });
     }
@@ -69,30 +73,26 @@ public class annonce_cli_prp extends AppCompatActivity {
     private void fetchAnnoncesForUser(String userId) {
         db.collection("users").document(userId).collection("annonces")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                Boolean isValid = document.getBoolean("valid");
-                                if (isValid != null && isValid == true) {
-                                    String id = document.getId();
-                                    String adresse = document.getString("adresse");
-                                    String superficie = document.getString("superficie");
-                                    String price = document.getString("price");
-                                    String numChambres = document.getString("numChambres");
-                                    String description = document.getString("description");
-                                    String bien = document.getString("bien");
-                                    String ann = document.getString("ann");
-                                    String gouv = document.getString("gouv");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            Boolean isValid = document.getBoolean("valid");
+                            if (isValid != null && isValid) {
+                                String id = document.getId();
+                                String adresse = document.getString("adresse");
+                                String superficie = document.getString("superficie");
+                                String price = document.getString("price");
+                                String numChambres = document.getString("numChambres");
+                                String description = document.getString("description");
+                                String bien = document.getString("bien");
+                                String ann = document.getString("ann");
+                                String gouv = document.getString("gouv");
 
-                                    // Fetch images for this announcement
-                                    fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv);
-                                }
+                                fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv);
                             }
-                        } else {
-                            Log.e("Fetch Annonce", "Error getting documents: ", task.getException());
                         }
+                    } else {
+                        Log.e("Fetch Annonce", "Error getting documents: ", task.getException());
                     }
                 });
     }
@@ -101,19 +101,38 @@ public class annonce_cli_prp extends AppCompatActivity {
         List<Uri> imageUris = new ArrayList<>();
         StorageReference imagesRef = storage.getReference().child("users").child(userId).child(annonceId);
 
-        for (int i = 0; i < MAX_IMAGES_PER_ANNOUNCEMENT; i++) {
-            StorageReference imageRef = imagesRef.child("image" + i);
-            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                imageUris.add(uri);
-                if (imageUris.size() == MAX_IMAGES_PER_ANNOUNCEMENT) {
-                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris);
+        imagesRef.listAll().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<StorageReference> imageRefs = task.getResult().getItems();
+                int totalImages = Math.min(imageRefs.size(), MAX_IMAGES_PER_ANNOUNCEMENT);
+
+                if (totalImages == 0) {
+                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,false);
                     annonceList.add(annonce);
                     annonceAdapter.notifyDataSetChanged();
+                } else {
+                    for (int i = 0; i < totalImages; i++) {
+                        StorageReference imageRef = imageRefs.get(i);
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            imageUris.add(uri);
+                            if (imageUris.size() == totalImages) {
+                                Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,false);
+                                annonceList.add(annonce);
+                                annonceAdapter.notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(e -> {
+                            Log.e("Fetch Image", "Failed to fetch image for annonce: " + annonceId, e);
+                            if (imageUris.size() == totalImages) {
+                                Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,false);
+                                annonceList.add(annonce);
+                                annonceAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
                 }
-            }).addOnFailureListener(e -> {
-                Log.e("Fetch Image", "Failed to fetch image for annonce: " + annonceId, e);
-                // Optionally handle if some images are not found
-            });
-        }
+            } else {
+                Log.e("Fetch Images", "Failed to list images for annonce: " + annonceId, task.getException());
+            }
+        });
     }
 }

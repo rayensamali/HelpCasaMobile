@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".nouvelleAnnonce"
     android:orientation="vertical"
-    android:background="@drawable/nvl_annonce_client"
-    >
-
+    android:background="@drawable/nvl_annonce_client">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,9 +19,7 @@
             android:layout_marginTop="23dp"
             android:layout_marginLeft="15dp"
             android:src="@drawable/arrow"
-            android:background="@color/hintc"
-            />
-
+            android:background="@color/hintc" />
 
         <View
             android:layout_width="0dp"
@@ -34,8 +30,7 @@
             android:id="@+id/photoContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_gravity="end">
+            android:layout_marginEnd="10dp">
 
             <View
                 android:layout_width="80dp"
@@ -66,55 +61,46 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/dafaultim"
                     android:scaleType="centerCrop" />
-
             </androidx.cardview.widget.CardView>
         </RelativeLayout>
     </LinearLayout>
-
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:text="@string/hist"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:textColor="@color/white"
         android:gravity="center"
-        android:id="@+id/histVide"
-        />
+        android:id="@+id/histVide" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/new_ann_client_corr"
-        android:paddingBottom="0dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginVertical="20dp"
-        >
+        android:layout_marginVertical="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/ryclHisto"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp" />
 
 
-
-
-
-
-</LinearLayout>
-
-
-
-
-
-
-
-
-
-
+        <TextView
+            android:id="@+id/noAnnoncesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Pas d'annonces publiées"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -4,17 +4,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -22,61 +22,57 @@ import java.util.List;
 
 public class Annonce_detaile extends AppCompatActivity {
 
-    private Intent intent;
+    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5;
+
+    private TextView valid;
+
     private String annonceId;
     private Annonce annonce;
-    private String adresse;
-    private String superficie;
-    private String price;
-    private String numChambres;
-    private String description;
-    private String bien;
-    private String ann;
-    private String gouv;
-    private List<Uri> imageUrls;
-    private TextView tpB, tpAnn, gov, prx, desc;
     private RecyclerView imgRecyclerView;
-
-    private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5; // Example value, adjust as needed
-
-    private FirebaseFirestore db;
     private FirebaseStorage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_annonce_detaile);
+        valid = findViewById(R.id.reserv);
+
+        valid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Annonce_detaile.this, payement.class);
+                i.putExtra("prix",annonce.getPrice());
+                i.putExtra("typ",annonce.getAnn());
+                startActivity(i);
+            }
+        });
         imgRecyclerView = findViewById(R.id.imgsDuBien);
+        imgRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        intent = getIntent();
-        db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
-
+        Intent intent = getIntent();
         annonceId = intent.getStringExtra("annonceId");
         annonce = intent.getParcelableExtra("annonce");
 
-        adresse = annonce.getAdresse();
-        superficie = annonce.getSuperficie();
-        price = annonce.getPrice();
-        numChambres = annonce.getNumChambres();
-        description = annonce.getDescription();
-        bien = annonce.getBien();
-        ann = annonce.getAnn();
-        gouv = annonce.getGouv();
-        imageUrls = annonce.getImageUrls();
+        storage = FirebaseStorage.getInstance();
 
-        tpB = findViewById(R.id.typbien);
-        tpB.setText(bien);
-        tpAnn = findViewById(R.id.tyTrans);
-        tpAnn.setText(ann);
-        gov = findViewById(R.id.gouvernorat);
-        gov.setText(gouv);
-        prx = findViewById(R.id.prix);
-        prx.setText(price);
-        desc = findViewById(R.id.boxDes);
-        desc.setText(description);
+        if (annonce != null) {
+            populateAnnonceDetails();
+            fetchImagesForAnnonce();
+        }
+    }
 
-        fetchImagesForAnnonce();
+    private void populateAnnonceDetails() {
+        TextView tpB = findViewById(R.id.typbien);
+        TextView tpAnn = findViewById(R.id.tyTrans);
+        TextView gov = findViewById(R.id.gouvernorat);
+        TextView prx = findViewById(R.id.prix);
+        TextView desc = findViewById(R.id.boxDes);
+
+        tpB.setText(annonce.getBien());
+        tpAnn.setText(annonce.getAnn());
+        gov.setText(annonce.getGouv());
+        prx.setText(annonce.getPrice());
+        desc.setText(annonce.getDescription());
     }
 
     private void fetchImagesForAnnonce() {
@@ -86,34 +82,27 @@ public class Annonce_detaile extends AppCompatActivity {
         usersRef.listAll().addOnSuccessListener(listResult -> {
             for (StorageReference userRef : listResult.getPrefixes()) {
                 StorageReference annonceRef = userRef.child(annonceId);
-
                 annonceRef.listAll().addOnSuccessListener(annonceListResult -> {
                     for (StorageReference imageRef : annonceListResult.getItems()) {
                         imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             imageUris.add(uri);
-                            if (imageUris.size() == MAX_IMAGES_PER_ANNOUNCEMENT) {
+                            if (imageUris.size() == MAX_IMAGES_PER_ANNOUNCEMENT || imageUris.size() == annonceListResult.getItems().size()) {
                                 setImageAdapter(imageUris);
                             }
                         }).addOnFailureListener(e -> {
                             Log.e("Fetch Image", "Failed to fetch image for annonce: " + annonceId, e);
-                            if (imageUris.size() == MAX_IMAGES_PER_ANNOUNCEMENT) {
+                            if (imageUris.size() == MAX_IMAGES_PER_ANNOUNCEMENT || imageUris.size() == annonceListResult.getItems().size()) {
                                 setImageAdapter(imageUris);
                             }
                         });
                     }
-                }).addOnFailureListener(e -> {
-                    Log.e("Fetch Annonce", "Failed to fetch annonce folder for annonce: " + annonceId, e);
-                });
+                }).addOnFailureListener(e -> Log.e("Fetch Annonce", "Failed to fetch annonce folder for annonce: " + annonceId, e));
             }
-        }).addOnFailureListener(e -> {
-            Log.e("Fetch Users", "Failed to fetch users folders", e);
-        });
+        }).addOnFailureListener(e -> Log.e("Fetch Users", "Failed to fetch users folders", e));
     }
-
 
     private void setImageAdapter(List<Uri> imageUris) {
         ImagerecuAdapter imageAdapter = new ImagerecuAdapter(imageUris, this);
-        imgRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         imgRecyclerView.setAdapter(imageAdapter);
     }
 }

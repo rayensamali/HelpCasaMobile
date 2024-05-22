@@ -28,16 +28,13 @@ public class home_CliPro extends AppCompatActivity  implements View.OnClickListe
     public void onClick(View view) {
         if(view.getId() == R.id.poster){
             startActivity(new Intent(home_CliPro.this, nouvelleAnnonce.class));
-            finish();
         }
         if(view.getId() == R.id.consulter){
             startActivity(new Intent(home_CliPro.this, annonce_cli_prp.class));
-            finish();
         }
 
         if(view.getId() == R.id.hist){
             startActivity(new Intent(home_CliPro.this, historique.class));
-            finish();
         }
     }
 }
