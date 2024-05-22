@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class Annonce_detaile extends AppCompatActivity {
     private Annonce annonce;
     private RecyclerView imgRecyclerView;
     private FirebaseStorage storage;
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +45,12 @@ public class Annonce_detaile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(Annonce_detaile.this, payement.class);
-                i.putExtra("prix",annonce.getPrice());
-                i.putExtra("typ",annonce.getAnn());
+                i.putExtra("prix", annonce.getPrice());
+                i.putExtra("typ", annonce.getAnn());
                 startActivity(i);
             }
         });
+
         imgRecyclerView = findViewById(R.id.imgsDuBien);
         imgRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -54,10 +59,13 @@ public class Annonce_detaile extends AppCompatActivity {
         annonce = intent.getParcelableExtra("annonce");
 
         storage = FirebaseStorage.getInstance();
+        db = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (annonce != null) {
             populateAnnonceDetails();
             fetchImagesForAnnonce();
+            checkIfUserIsOwner();
         }
     }
 
@@ -104,5 +112,23 @@ public class Annonce_detaile extends AppCompatActivity {
     private void setImageAdapter(List<Uri> imageUris) {
         ImagerecuAdapter imageAdapter = new ImagerecuAdapter(imageUris, this);
         imgRecyclerView.setAdapter(imageAdapter);
+    }
+
+    private void checkIfUserIsOwner() {
+        if (currentUser != null && annonceId != null) {
+            db.collection("users").document(currentUser.getUid())
+                    .collection("annonces").document(annonceId).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // The user is the owner of the announcement
+                                valid.setEnabled(false);
+                            }
+                        } else {
+                            Log.e("checkIfUserIsOwner", "get failed with ", task.getException());
+                        }
+                    });
+        }
     }
 }

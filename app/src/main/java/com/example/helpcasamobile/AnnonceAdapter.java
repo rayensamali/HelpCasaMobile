@@ -62,19 +62,23 @@ public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceV
         }
 
         Picasso.get().load(annonce.getImageUrls().get(0)).into(holder.img);
+        if(!isHistorique){
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent;
+                if (sh.getString("type", "").equals("agent")) {
+                    intent = new Intent(context, Annonce_recu.class);
+                } else {
+                    intent = new Intent(context, Annonce_detaile.class);
+                }
+                Log.d("annn", "clicked");
+                intent.putExtra("annonceId", annonce.getId());
+                intent.putExtra("annonce", annonce);
+                context.startActivity(intent);
+            });
+        }else{
+            holder.itemView.setOnClickListener(null); // Remove the click listener
+        }
 
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent;
-            if (sh.getString("type", "").equals("agent")) {
-                intent = new Intent(context, Annonce_recu.class);
-            } else {
-                intent = new Intent(context, Annonce_detaile.class);
-            }
-            Log.d("annn", "clicked");
-            intent.putExtra("annonceId", annonce.getId());
-            intent.putExtra("annonce", annonce);
-            context.startActivity(intent);
-        });
     }
 
     @Override
