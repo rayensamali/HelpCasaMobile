@@ -76,8 +76,8 @@ public class annonce_cli_prp extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
-                            Boolean isValid = document.getBoolean("valid");
-                            if (isValid != null && isValid) {
+                            Long isValid = document.getLong("valid");
+                            if (isValid != null && isValid == 1) {
                                 String id = document.getId();
                                 String adresse = document.getString("adresse");
                                 String superficie = document.getString("superficie");
@@ -88,7 +88,7 @@ public class annonce_cli_prp extends AppCompatActivity {
                                 String ann = document.getString("ann");
                                 String gouv = document.getString("gouv");
 
-                                fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv);
+                                fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv,isValid);
                             }
                         }
                     } else {
@@ -97,7 +97,7 @@ public class annonce_cli_prp extends AppCompatActivity {
                 });
     }
 
-    private void fetchImagesForAnnonce(String userId, String annonceId, String adresse, String superficie, String price, String numChambres, String description, String bien, String ann, String gouv) {
+    private void fetchImagesForAnnonce(String userId, String annonceId, String adresse, String superficie, String price, String numChambres, String description, String bien, String ann, String gouv, Long isValid) {
         List<Uri> imageUris = new ArrayList<>();
         StorageReference imagesRef = storage.getReference().child("users").child(userId).child(annonceId);
 
@@ -107,7 +107,7 @@ public class annonce_cli_prp extends AppCompatActivity {
                 int totalImages = Math.min(imageRefs.size(), MAX_IMAGES_PER_ANNOUNCEMENT);
 
                 if (totalImages == 0) {
-                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,false);
+                    Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,isValid);
                     annonceList.add(annonce);
                     annonceAdapter.notifyDataSetChanged();
                 } else {
@@ -116,14 +116,14 @@ public class annonce_cli_prp extends AppCompatActivity {
                         imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             imageUris.add(uri);
                             if (imageUris.size() == totalImages) {
-                                Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,false);
+                                Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,isValid);
                                 annonceList.add(annonce);
                                 annonceAdapter.notifyDataSetChanged();
                             }
                         }).addOnFailureListener(e -> {
                             Log.e("Fetch Image", "Failed to fetch image for annonce: " + annonceId, e);
                             if (imageUris.size() == totalImages) {
-                                Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,false);
+                                Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,isValid);
                                 annonceList.add(annonce);
                                 annonceAdapter.notifyDataSetChanged();
                             }

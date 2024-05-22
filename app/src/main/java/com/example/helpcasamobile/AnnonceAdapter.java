@@ -52,7 +52,13 @@ public class AnnonceAdapter extends RecyclerView.Adapter<AnnonceAdapter.AnnonceV
         holder.proprietaire.setText(annonce.getAnn());
 
         if (holder.isHistorique && holder.etat != null) {
-            holder.etat.setText(annonce.getEtat() ? "publié" : "en cours de validation"); // Use the etat field
+            if(annonce.getValid()==0){
+                holder.etat.setText("en cous de validation");
+            } else if (annonce.getValid()==1) {
+                holder.etat.setText("annonce validé");
+            }else {
+                holder.etat.setText("non validé");
+            }
         }
 
         Picasso.get().load(annonce.getImageUrls().get(0)).into(holder.img);

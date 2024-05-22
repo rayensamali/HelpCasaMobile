@@ -4,20 +4,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageException;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -81,7 +78,7 @@ public class annrecu extends AppCompatActivity {
 
     private void fetchAnnoncesForUser(String userId) {
         db.collection("users").document(userId).collection("annonces")
-                .whereEqualTo("valid", false) // Only fetch invalid announcements
+                .whereEqualTo("valid", 0) // Only fetch announcements with valid == 0
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -120,16 +117,16 @@ public class annrecu extends AppCompatActivity {
                 } else {
                     Exception e = task.getException();
                     if (e instanceof StorageException && ((StorageException) e).getErrorCode() == StorageException.ERROR_OBJECT_NOT_FOUND) {
-                        Log.e("Fetch Images", "Image not found: " + "image");
+                        Log.e("Fetch Images", "Image not found: image" );
                     } else {
-                        Log.e("Fetch Images", "Failed to fetch image: " + "image" , e);
+                        Log.e("Fetch Images", "Failed to fetch image: image" , e);
                     }
                 }
             }));
         }
 
         Tasks.whenAllComplete(tasks).addOnCompleteListener(task -> {
-            Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris, false);
+            Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris, 0L);
             annonceList.add(annonce);
             annonceAdapter.notifyDataSetChanged();
         });

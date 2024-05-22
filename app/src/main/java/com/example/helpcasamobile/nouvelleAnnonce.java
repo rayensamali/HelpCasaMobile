@@ -40,7 +40,7 @@ public class nouvelleAnnonce extends AppCompatActivity {
     private String bien, ann, gouv;
 
     private EditText adr, sup, prix, nbch, desc;
-    private boolean valide = false;
+    private int valide = 0;
     private TextView ajoutph, envoyer;
     private RecyclerView imgRecyclerView;
 

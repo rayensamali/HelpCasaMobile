@@ -91,9 +91,9 @@ public class historique extends AppCompatActivity {
                                         String bien = document.getString("bien");
                                         String ann = document.getString("ann");
                                         String gouv = document.getString("gouv");
-                                        boolean etat = document.getBoolean("valid"); // Retrieve the etat parameter
+                                        Long valid = document.getLong("valid");
 
-                                        fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv, etat); // Pass the etat parameter
+                                        fetchImagesForAnnonce(userId, id, adresse, superficie, price, numChambres, description, bien, ann, gouv, valid); // Pass the etat parameter
                                     }
                                 }
                             }
@@ -104,7 +104,7 @@ public class historique extends AppCompatActivity {
         }
     }
 
-    private void fetchImagesForAnnonce(String userId, String annonceId, String adresse, String superficie, String price, String numChambres, String description, String bien, String ann, String gouv,boolean etat) {
+    private void fetchImagesForAnnonce(String userId, String annonceId, String adresse, String superficie, String price, String numChambres, String description, String bien, String ann, String gouv,Long valid) {
         List<Uri> imageUris = new ArrayList<>();
         StorageReference imagesRef = storage.getReference().child("users").child(userId).child(annonceId);
 
@@ -116,7 +116,7 @@ public class historique extends AppCompatActivity {
                     imageUris.add(uri);
                     int currentCount = count.incrementAndGet();
                     if (currentCount == MAX_IMAGES_PER_ANNOUNCEMENT || currentCount == listResult.getItems().size()) {
-                        Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,etat);
+                        Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,valid);
                         annonceList.add(annonce);
                         annonceIds.add(annonceId);
                         annonceAdapter.notifyDataSetChanged();
@@ -125,7 +125,7 @@ public class historique extends AppCompatActivity {
                     Log.e("Fetch Images", "Failed to fetch image for annonce: " + annonceId, e);
                     int currentCount = count.incrementAndGet();
                     if (currentCount == MAX_IMAGES_PER_ANNOUNCEMENT || currentCount == listResult.getItems().size()) {
-                        Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,etat);
+                        Annonce annonce = new Annonce(annonceId, adresse, superficie, price, numChambres, description, bien, ann, gouv, imageUris,valid);
                         annonceList.add(annonce);
                         annonceIds.add(annonceId);
                         annonceAdapter.notifyDataSetChanged();

@@ -18,11 +18,11 @@ public class Annonce implements Parcelable {
     private String ann;
     private String gouv;
     private List<Uri> imageUrls; // List of image URLs
-    private boolean etat; // Validation state
+    private Long valid; // Validation state
 
     // Constructor
     public Annonce(String id, String adresse, String superficie, String price, String numChambres,
-                   String description, String bien, String ann, String gouv, List<Uri> imageUrls, boolean etat) {
+                   String description, String bien, String ann, String gouv, List<Uri> imageUrls, Long valid) {
         this.id = id;
         this.adresse = adresse;
         this.superficie = superficie;
@@ -33,7 +33,7 @@ public class Annonce implements Parcelable {
         this.ann = ann;
         this.gouv = gouv;
         this.imageUrls = imageUrls;
-        this.etat = etat;
+        this.valid = valid;
     }
 
     // Getters and setters
@@ -77,12 +77,12 @@ public class Annonce implements Parcelable {
         return imageUrls;
     }
 
-    public boolean getEtat() {
-        return etat;
+    public Long getValid() {
+        return valid;
     }
 
-    public void setEtat(boolean etat) {
-        this.etat = etat;
+    public void setValid(Long valid) {
+        this.valid = valid;
     }
 
     // Parcelable implementation
@@ -98,7 +98,11 @@ public class Annonce implements Parcelable {
         gouv = in.readString();
         imageUrls = new ArrayList<>();
         in.readTypedList(imageUrls, Uri.CREATOR);
-        etat = in.readByte() != 0;
+        if (in.readByte() == 0) {
+            valid = null;
+        } else {
+            valid = in.readLong();
+        }
     }
 
     @Override
@@ -113,7 +117,12 @@ public class Annonce implements Parcelable {
         dest.writeString(ann);
         dest.writeString(gouv);
         dest.writeTypedList(imageUrls);
-        dest.writeByte((byte) (etat ? 1 : 0));
+        if (valid == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(valid);
+        }
     }
 
     @Override

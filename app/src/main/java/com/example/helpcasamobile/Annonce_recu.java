@@ -19,8 +19,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Annonce_recu extends AppCompatActivity {
@@ -51,25 +53,24 @@ public class Annonce_recu extends AppCompatActivity {
         setContentView(R.layout.activity_annonce_recu);
 
         refuser = findViewById(R.id.refuser);
-
         imgRecyclerView = findViewById(R.id.imgRecyclerView);
-
         db = FirebaseFirestore.getInstance();
-
         accept = findViewById(R.id.accepter);
 
         refuser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                refuserann();
             }
         });
+
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 accepterann();
             }
         });
+
         intent = getIntent();
         if (intent != null) {
             // Retrieve the data from Intent extras
@@ -141,7 +142,7 @@ public class Annonce_recu extends AppCompatActivity {
                                                         DocumentSnapshot document = task.getResult();
                                                         if (document.exists()) {
                                                             DocumentReference annonceRef = document.getReference();
-                                                            annonceRef.update("valid", true)
+                                                            annonceRef.update("valid", 1) // Set valid to 1 when accepted
                                                                     .addOnSuccessListener(aVoid -> {
                                                                         Toast.makeText(Annonce_recu.this, "Annonce accepted!", Toast.LENGTH_SHORT).show();
                                                                     })
@@ -165,4 +166,52 @@ public class Annonce_recu extends AppCompatActivity {
                     });
         }
     }
+
+    private void refuserann() {
+        if (annonceId != null) {
+            db.collection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot userDocument : task.getResult()) {
+                                    String userId = userDocument.getId();
+                                    db.collection("users")
+                                            .document(userId)
+                                            .collection("annonces")
+                                            .document(annonceId)
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+                                                            DocumentReference annonceRef = document.getReference();
+                                                            annonceRef.update("valid", 2) // Set valid to 2 when refused
+                                                                    .addOnSuccessListener(aVoid -> {
+                                                                        Toast.makeText(Annonce_recu.this, "Annonce refused!", Toast.LENGTH_SHORT).show();
+                                                                    })
+                                                                    .addOnFailureListener(e -> {
+                                                                        Log.e("refuserAnn", "Error updating document", e);
+                                                                        Toast.makeText(Annonce_recu.this, "Error refusing annonce", Toast.LENGTH_SHORT).show();
+                                                                    });
+                                                        }
+                                                    } else {
+                                                        Log.e("refuserAnn", "Error getting documents: ", task.getException());
+                                                        Toast.makeText(Annonce_recu.this, "Error finding annonce", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                }
+                            } else {
+                                Log.e("refuserAnn", "Error getting users: ", task.getException());
+                                Toast.makeText(Annonce_recu.this, "Error finding users", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+
 }
