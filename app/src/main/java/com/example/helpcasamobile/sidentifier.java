@@ -33,7 +33,6 @@ public class sidentifier extends AppCompatActivity {
     FirebaseFirestore db;
     private Intent i;
 
-
     private SharedPreferences sh;
 
     @Override
@@ -81,8 +80,6 @@ public class sidentifier extends AppCompatActivity {
                                     String userId = mUser.getUid();
                                     // Retrieve user type from Firestore
                                     getUserType(userId);
-
-
                                 }
                             } else {
                                 Toast.makeText(sidentifier.this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -139,11 +136,6 @@ public class sidentifier extends AppCompatActivity {
                 }
 
             }
-
-
-
         });
-
-
     }
 }

@@ -69,6 +69,7 @@ public class Annonce_detaile extends AppCompatActivity {
         }
     }
 
+
     private void populateAnnonceDetails() {
         TextView tpB = findViewById(R.id.typbien);
         TextView tpAnn = findViewById(R.id.tyTrans);
@@ -82,6 +83,8 @@ public class Annonce_detaile extends AppCompatActivity {
         prx.setText(annonce.getPrice());
         desc.setText(annonce.getDescription());
     }
+
+
 
     private void fetchImagesForAnnonce() {
         List<Uri> imageUris = new ArrayList<>();
@@ -108,6 +111,8 @@ public class Annonce_detaile extends AppCompatActivity {
             }
         }).addOnFailureListener(e -> Log.e("Fetch Users", "Failed to fetch users folders", e));
     }
+
+
 
     private void setImageAdapter(List<Uri> imageUris) {
         ImagerecuAdapter imageAdapter = new ImagerecuAdapter(imageUris, this);
