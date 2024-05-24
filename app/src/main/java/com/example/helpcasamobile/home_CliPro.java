@@ -3,6 +3,7 @@ package com.example.helpcasamobile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class home_CliPro extends AppCompatActivity  implements View.OnClickListener {
 
+
+    private ImageButton param;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +24,9 @@ public class home_CliPro extends AppCompatActivity  implements View.OnClickListe
         findViewById(R.id.poster).setOnClickListener(this);
         findViewById(R.id.consulter).setOnClickListener(this);
         findViewById(R.id.hist).setOnClickListener(this);
+
+
+
 
     }
 

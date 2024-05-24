@@ -3,6 +3,8 @@ package com.example.helpcasamobile;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ public class annonce_cli_prp extends AppCompatActivity {
     private List<Annonce> annonceList;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
+    private ImageButton settings;
 
     private static final int MAX_IMAGES_PER_ANNOUNCEMENT = 5;
 

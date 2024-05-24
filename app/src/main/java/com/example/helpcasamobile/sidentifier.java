@@ -48,6 +48,7 @@ public class sidentifier extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         noacc = findViewById(R.id.noacc);
         sh = getSharedPreferences("userType", Context.MODE_PRIVATE);
+
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,7 +135,6 @@ public class sidentifier extends AppCompatActivity {
                     startActivity(i);
 
                 }
-
             }
         });
     }
