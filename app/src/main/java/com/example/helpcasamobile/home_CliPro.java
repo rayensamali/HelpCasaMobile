@@ -1,5 +1,6 @@
 package com.example.helpcasamobile;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -42,5 +43,11 @@ public class home_CliPro extends AppCompatActivity  implements View.OnClickListe
         if(view.getId() == R.id.hist){
             startActivity(new Intent(home_CliPro.this, historique.class));
         }
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        // Fermer l'application lorsque le bouton "Back" est pressé
+        finishAffinity(); // Termine toutes les activités et quitte l'application
     }
 }

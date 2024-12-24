@@ -2,6 +2,7 @@ package com.example.helpcasamobile;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,8 +27,11 @@ public class homeAgent extends AppCompatActivity {
 
             }
         });
-
-
-
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        // Fermer l'application lorsque le bouton "Back" est pressé
+        finishAffinity(); // Termine toutes les activités et quitte l'application
     }
 }
