@@ -3,6 +3,7 @@ package com.example.helpcasamobile;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +49,7 @@ public class sidentifier extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         noacc = findViewById(R.id.noacc);
         sh = getSharedPreferences("userType", Context.MODE_PRIVATE);
-
+        checkIfLoggedIn();
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +105,9 @@ public class sidentifier extends AppCompatActivity {
                                     //put user type in shared preferences
                                     editor.putString("type", userType);
                                     editor.apply();
-                                    startActivity(new Intent(sidentifier.this,homeAgent.class));
+                                    Intent intent = new Intent(sidentifier.this, homeAgent.class);
+                                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
                                     finish();
                                 }
                                 if("PROPRIETAIRE".equals(userType)){
@@ -112,7 +115,9 @@ public class sidentifier extends AppCompatActivity {
                                     //put user type in shared preferences
                                     editor.putString("type", userType);
                                     editor.apply();
-                                    startActivity(new Intent(sidentifier.this,home_CliPro.class));
+                                    Intent intent = new Intent(sidentifier.this, home_CliPro.class);
+                                    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
                                     finish();
                                 }
                                 // Handle the retrieved user type as needed
@@ -137,5 +142,20 @@ public class sidentifier extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void checkIfLoggedIn() {
+        mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            // User is logged in, get user type from SharedPreferences
+            String userType = sh.getString("type", "");
+            if ("agent".equals(userType)) {
+                startActivity(new Intent(sidentifier.this, homeAgent.class));
+                finish();
+            } else if ("PROPRIETAIRE".equals(userType)) {
+                startActivity(new Intent(sidentifier.this, home_CliPro.class));
+                finish();
+            }
+        }
     }
 }
