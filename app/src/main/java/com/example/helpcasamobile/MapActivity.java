@@ -2,6 +2,7 @@ package com.example.helpcasamobile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,8 +11,6 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.views.MapView;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
-
-import java.util.Objects;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -28,32 +27,33 @@ public class MapActivity extends AppCompatActivity {
         mapView.setBuiltInZoomControls(true);
         mapView.setMultiTouchControls(true);
 
-        // Set the initial view to a default location (Tunis)
+        // Set the initial view to a default location
         mapView.getController().setZoom(12.0);
         mapView.getController().setCenter(new GeoPoint(36.8065, 10.1815)); // Tunis
 
-        // Add a long press listener to select a location
-        mapView.setOnLongClickListener(view -> {
-            Toast.makeText(MapActivity.this, "Long Click Detected", Toast.LENGTH_SHORT).show();
-            // Get the GeoPoint corresponding to the long-click location
-            selectedLocation = (GeoPoint) mapView.getProjection().fromPixels((int) view.getX(), (int) view.getY());
+        // Add a touch listener to detect map clicks
+        mapView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Get the GeoPoint of the click location
+                selectedLocation = (GeoPoint) mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY());
 
-            // Remove any previous markers
-            mapView.getOverlays().clear();
+                // Clear previous markers
+                mapView.getOverlays().clear();
 
-            // Create and add a new marker at the selected location
-            Marker marker = new Marker(mapView);
-            marker.setPosition(selectedLocation);
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            mapView.getOverlays().add(marker);
+                // Create and add a new marker at the clicked location
+                Marker marker = new Marker(mapView);
+                marker.setPosition(selectedLocation);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                mapView.getOverlays().add(marker);
+                mapView.invalidate();
 
-            // Update the map and show a toast
-            mapView.invalidate();
-            Toast.makeText(MapActivity.this, "Location Selected: " + selectedLocation.getLatitude() + ", " + selectedLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                // Show a Toast with the coordinates
+                Toast.makeText(MapActivity.this, "Location Selected: " + selectedLocation.getLatitude() + ", " + selectedLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+            }
             return true;
         });
 
-        // Confirm the selected location and return it
+        // Handle confirmation of location selection
         findViewById(R.id.btnConfirmLocation).setOnClickListener(v -> {
             if (selectedLocation != null) {
                 Intent resultIntent = new Intent();
