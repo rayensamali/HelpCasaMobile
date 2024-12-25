@@ -15,6 +15,9 @@
         android:theme="@style/Theme.HelpCasaMobile"
         tools:targetApi="31">
         <activity
+            android:name=".AdminPanelActivity"
+            android:exported="false" />
+        <activity
             android:name=".disconnect"
             android:exported="false" />
         <activity
