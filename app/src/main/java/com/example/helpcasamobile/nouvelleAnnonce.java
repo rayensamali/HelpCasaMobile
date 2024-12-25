@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -93,6 +94,13 @@ public class nouvelleAnnonce extends AppCompatActivity {
                 sendAnnonce();
             }
         });
+
+        // Open Map Activity
+        Button btnOpenMap = findViewById(R.id.open_map_button);
+        btnOpenMap.setOnClickListener(v -> {
+            Intent intent = new Intent(nouvelleAnnonce.this, MapActivity.class);
+            startActivityForResult(intent, 222); // 222 is the request code
+        });
     }
 
     private void imageChooser() {
@@ -109,6 +117,8 @@ public class nouvelleAnnonce extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Handling image picker result
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
             if (data != null) {
                 if (data.getClipData() != null) {
@@ -124,7 +134,18 @@ public class nouvelleAnnonce extends AppCompatActivity {
                 imageAdapter.notifyDataSetChanged();
             }
         }
+
+        // Handling location result from MapActivity
+        if (requestCode == 222 && resultCode == RESULT_OK && data != null) {
+            double latitude = data.getDoubleExtra("latitude", 0.0);
+            double longitude = data.getDoubleExtra("longitude", 0.0);
+
+            // Save location in your Firestore document or display it
+            Toast.makeText(this, "Location: " + latitude + ", " + longitude, Toast.LENGTH_SHORT).show();
+            // You can also save this in the Firestore database if needed
+        }
     }
+
 
     private void setTypbien() {
         typbien = findViewById(R.id.type_bien);
@@ -241,7 +262,7 @@ public class nouvelleAnnonce extends AppCompatActivity {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 // Handle image upload failure
-                                Toast.makeText(nouvelleAnnonce.this, "Failed to upload image " , Toast.LENGTH_SHORT).show();
+                                Toast.makeText(nouvelleAnnonce.this, "Failed to upload image ", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -255,7 +276,7 @@ public class nouvelleAnnonce extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(nouvelleAnnonce.this, "Annonce publiés avec succé", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(nouvelleAnnonce.this,home_CliPro.class));
+                                startActivity(new Intent(nouvelleAnnonce.this, home_CliPro.class));
                                 finish();
                             } else {
                                 Toast.makeText(nouvelleAnnonce.this, "Probleme de publication", Toast.LENGTH_SHORT).show();
@@ -266,5 +287,4 @@ public class nouvelleAnnonce extends AppCompatActivity {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
